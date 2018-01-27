@@ -87,6 +87,7 @@ public class GameBoard {
 			for(int k = 0; k < potentialMoves.size(); k++) { //for each empty cases we check if there is in one end of sev. directions the current player's color
 			//check relation of empty spot with opponent stone
 				Coordinates possibleMove = potentialMoves.get(k);
+				
 				int d_x = opponent.X-possibleMove.X;
 				int d_y = opponent.Y-possibleMove.Y;
 				
@@ -97,6 +98,7 @@ public class GameBoard {
 					if(Board[newpos.X][newpos.Y] == op) continue;
 					if(Board[newpos.X][newpos.Y] == player) {
 						finalMoves.add(possibleMove);
+						break;
 					}
 					break;
 				}
