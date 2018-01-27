@@ -58,7 +58,7 @@ public class GameBoard {
 		}
 	
 	public ArrayList<Coordinates> opponentStones(int player){
-		int opponent = (player == 1) ? 2 : 1; 
+		int opponent = (player == WHITE) ? BLACK : WHITE; 
 		ArrayList<Coordinates> oppStones = new ArrayList<Coordinates>();
 		
 		for(int i = 0; i < Board.length; i++) {
@@ -70,8 +70,39 @@ public class GameBoard {
 		return oppStones;	
 	}
 	
+	
 	public ArrayList<Coordinates> availableMoves(int player) {
-		return new ArrayList<Coordinates>();
+		
+		// define the opponent player
+		int op = (player == BLACK) ? WHITE : BLACK;
+		
+		
+		ArrayList<Coordinates> finalMoves = new ArrayList<Coordinates>(); //real moves
+		ArrayList<Coordinates> potentialMoves = new ArrayList<Coordinates>(); //intermediate moves (requiring more constraints)
+		ArrayList<Coordinates> opp;
+		opp = opponentStones(player);  //opponent stones
+		for(int i = 0; i < opp.size(); i++) {
+			Coordinates opponent = opp.get(i);
+			potentialMoves = emptyNeighbours(opponent);  //all the EMPTY cases around an opponent stones
+			for(int k = 0; k < potentialMoves.size(); k++) { //for each empty cases we check if there is in one end of sev. directions the current player's color
+			//check relation of empty spot with opponent stone
+				Coordinates possibleMove = potentialMoves.get(k);
+				int d_x = opponent.X-possibleMove.X;
+				int d_y = opponent.Y-possibleMove.Y;
+				
+				for (int lambda = 1; lambda < Board.length; lambda ++) {
+					Coordinates newpos = new Coordinates(opponent.X+lambda*d_x,opponent.Y+lambda*d_y);
+					if (!isOnBoard(newpos)) break;
+					if (Board[newpos.X][newpos.Y] == EMPTY) break;
+					if(Board[newpos.X][newpos.Y] == op) continue;
+					if(Board[newpos.X][newpos.Y] == player) {
+						finalMoves.add(possibleMove);
+					}
+					break;
+				}
+			}
+		}
+		return finalMoves;
 	}
 
 	public boolean isMoveAvailable(int player) {
