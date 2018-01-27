@@ -18,7 +18,6 @@ public class BasePlayer {
 			return new Coordinates(0,0);
 			*/
 		return new Coordinates(0,0);
-	}
-	
-	
+		
+	}	
 }
