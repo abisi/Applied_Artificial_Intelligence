@@ -3,11 +3,11 @@ package Search;
 public class BasePlayer {
 
 	private int Color;
-	private int Oponent;
+	private int Opponent;
 	
-	public BasePlayer(int color, int oponent) {
+	public BasePlayer(int color, int opponent) {
 		Color = color;
-		Oponent = oponent;
+		Opponent = opponent;
 	}
 
 	public Coordinates nextMove(GameBoard gb) {
