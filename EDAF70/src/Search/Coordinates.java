@@ -1,6 +1,6 @@
 package Search;
 /*
- * Class that represents coordinates
+ * Class that represents coordinates on the gameboard.
  */
 public class Coordinates {
 	public int X;
