@@ -4,6 +4,7 @@ public class BasePlayer {
 
 	private int Color;
 	private int Oponent;
+	public int trial;
 	
 	public BasePlayer(int color, int oponent) {
 		Color = color;
