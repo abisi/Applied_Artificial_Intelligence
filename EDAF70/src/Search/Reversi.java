@@ -7,7 +7,8 @@ public class Reversi {
 		
 		GameBoard gb = new GameBoard();
 		
-		
 	}
+	
+	
 
 }
