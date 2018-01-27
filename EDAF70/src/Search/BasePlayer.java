@@ -5,9 +5,9 @@ public class BasePlayer {
 	private int Color;
 	private int Opponent;
 	
-	public BasePlayer(int color, int oponent) {
+	public BasePlayer(int color, int opponent) {
 		Color = color;
-		Opponent = oponent;
+		Opponent = opponent;
 	}
 
 	public Coordinates nextMove(GameBoard gb) {
