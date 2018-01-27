@@ -9,7 +9,6 @@ public class BasePlayer {
 		Color = color;
 		Oponent = oponent;
 	}
-	
 
 	public Coordinates nextMove(GameBoard gb) {
 		/*

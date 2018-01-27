@@ -11,4 +11,9 @@ public class Coordinates {
 		this.Y = y;
 	}
 	
+	public Coordinates() {
+		X = 0;
+		Y = 0;
+	}
+	
 }
