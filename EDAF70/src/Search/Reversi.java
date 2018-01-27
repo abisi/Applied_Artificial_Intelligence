@@ -1,4 +1,7 @@
 package Search;
+/*
+ * A class that represents the game-user interface.
+ */
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
