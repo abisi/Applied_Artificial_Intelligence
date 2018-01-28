@@ -1,11 +1,7 @@
 package Search;
-/*
- * A class that represents the game-user interface.
- */
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -15,9 +11,13 @@ public class Reversi implements ActionListener {
 	// Private Members
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	private final JPanel GUI = new JPanel(new BorderLayout(3, 3));
-    private JButton[][] ReversiBoardSquares = new JButton[8][8];
+    private ReversiButton[][] ReversiBoard = new ReversiButton[8][8];
     private JPanel reversiBoard;
     private static final String COLS = "ABCDEFGH";
+    private static GameBoard gb;
+    
+    private BasePlayer Player1;
+    private BasePlayer Player2;
 
     
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,19 +25,16 @@ public class Reversi implements ActionListener {
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 	public static void main(String[] args) {
 		
-		// sets creates the reversi class
+		// creates the Reversi class
 		Reversi rvs = new Reversi();
 		
-		// set up the fram
+		
+		// set up the frame
 		JFrame frame = new JFrame("Reversi by se4054pf-s and ax5006bi-s");
         frame.add(rvs.getGui());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationByPlatform(true);
-
-        // ensures the frame is the minimum size it needs to be
-        // in order display the components within it
         frame.pack();
-        // ensures the minimum size is enforced.
         frame.setMinimumSize(frame.getSize());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -49,6 +46,8 @@ public class Reversi implements ActionListener {
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	Reversi() {
 		initializeGUI();
+		
+		newGame();
 	}
 	
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,27 +77,28 @@ public class Reversi implements ActionListener {
         newGameButton.addActionListener(this);
         tools.add(newGameButton);
 		
+        GUI.add(new JLabel("?"), BorderLayout.LINE_START);
+        
         reversiBoard = new JPanel(new GridLayout(0, 9));
+        reversiBoard.setBorder(new LineBorder(Color.BLACK));
         GUI.add(reversiBoard);
         
-        // create the reversi board squares
-        Insets buttonMargin = new Insets(0,0,0,0);
-        for (int i = 0; i < ReversiBoardSquares.length; i++) {
-            for (int j = 0; j < ReversiBoardSquares[i].length; j++) {
-                JButton b = new JButton();
-                b.setMargin(buttonMargin);
-                b.setPreferredSize(new Dimension(60,60));
-                b.putClientProperty( "X", i);
-                b.putClientProperty( "Y", j);
-                b.putClientProperty( "newGame", false);
-                b.addActionListener(this);
-                b.setForeground(Color.RED);
-                b.setOpaque(true);
-                ReversiBoardSquares[i][j] = b;
+        
+        for (int i = 0; i < ReversiBoard.length; i++) {
+            for (int j = 0; j < ReversiBoard[i].length; j++) {
+                
+            		ReversiButton b = new ReversiButton("");
+                
+            		b.putClientProperty( "X", i);
+            		b.putClientProperty( "Y", j);
+            		b.putClientProperty( "newGame", false);
+            		b.addActionListener(this);
+                
+            		ReversiBoard[i][j] = b;
             }
         }
         
-        //fill the reversi board
+        //fill the top row
         reversiBoard.add(new JLabel(""));
         
         // fill the top row
@@ -113,10 +113,9 @@ public class Reversi implements ActionListener {
             for (int j = 0; j < 8; j++) {
                 switch (j) {
                     case 0:
-                    		reversiBoard.add(new JLabel("" + (i + 1),
-                                SwingConstants.CENTER));
+                    		reversiBoard.add(new JLabel("" + (i + 1),SwingConstants.CENTER));
                     default:
-                    		reversiBoard.add(ReversiBoardSquares[i][j]);
+                    		reversiBoard.add(ReversiBoard[i][j]);
                 }
             }
         }
@@ -133,16 +132,45 @@ public class Reversi implements ActionListener {
 		int y = (int) button.getClientProperty("Y");
 		boolean newGame = (boolean) button.getClientProperty("newGame");
 		
-		if (newGame) newGameButtonPressed();
+		if (newGame) newGame();
 		else boardButtonPressed(x,y);
 	}
 	
 	public void boardButtonPressed(int x, int y) {
 		System.out.println("The button ["+ x +"," + y +"] was pressed.");
+		
 	}
 	
-	public void newGameButtonPressed() {
-		System.out.println("The new Game button was pressed.");
+	public void newGame() {
+		System.out.println("New Game.");
+		// Create the Gameboard
+		gb = new GameBoard();
+		
+		// Create Player
+		Player1 = new BasePlayer(GameBoard.WHITE,GameBoard.BLACK);
+		Player2 = new BasePlayer(GameBoard.BLACK,GameBoard.WHITE);
+		
+		// create starting position
+		gb.makeMove(Player1.getColor(),new Coordinates(4,3));
+		gb.makeMove(Player1.getColor(),new Coordinates(3,4));
+		gb.makeMove(Player2.getColor(),new Coordinates(3,3));
+		gb.makeMove(Player2.getColor(),new Coordinates(4,4));
+		
+		// update GameBoard
+		updateGameBoard();
+		
 	}
 
+	public void updateGameBoard() {
+		System.out.println("Update GameBoard");
+		for(int i = 0; i < gb.getSize(); i++) {
+			for( int j = 0; j < gb.getSize(); j++) {
+				System.out.println("Board at [" + i + " , " + j + "] is " + gb.Board[i][j]);
+				if (gb.Board[i][j] == GameBoard.EMPTY) ReversiBoard[i][j].setBackground(Color.GREEN);
+				if (gb.Board[i][j] == GameBoard.WHITE) ReversiBoard[i][j].setBackground(Color.WHITE);
+				if (gb.Board[i][j] == GameBoard.BLACK) ReversiBoard[i][j].setBackground(Color.BLACK);
+			}
+		}
+	}
+	
 }
