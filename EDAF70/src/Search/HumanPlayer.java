@@ -28,24 +28,27 @@ public class HumanPlayer implements BasePlayer, ActionListener
 	}
 	
 	@Override
-	public Coordinates nextMove(GameBoard gb) {
+	public Coordinates nextMove(GameBoard gb, ArrayList<Coordinates> possibleMoves) {
 		System.out.println("nextMove");
 		
-		Coordinates nextMove = null;
-		ArrayList<Coordinates> possibleMoves = gb.availableMoves(Color);
 		printArrayList(possibleMoves);
 		
 		// return null if no moves are possible
 		if (possibleMoves.isEmpty()) return null;
+		
+		// determine possible moves
+		Coordinates nextMove = null;
 		while(nextMove == null) {
-			for(int i = 0; i < possibleMoves.size(); i++) {
-				if(possibleMoves.get(i).equals(Move)) {
-					nextMove = Move;
+			Coordinates newMove = Move;
+			
+			for (Coordinates move : possibleMoves) {
+				if(move.equals(newMove)) {
+					nextMove = newMove;
 					System.out.println("Updated move");
+					break;
 				}
 			}
 		}
-		
 		Move = null;
 		System.out.println("return nextMove");
 		return nextMove;

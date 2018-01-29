@@ -160,22 +160,27 @@ public class Reversi implements ActionListener {
 	private void play() {
 		System.out.println("Play");
 		
+		// define player
+		int PlayerColor1 = Player1.getColor();
+		int PlayerColor2 = Player2.getColor();
+		
 		while(!gb.isFull()) {
-			
 			System.out.println("GameBoard not full");
 			
 			// Player1
 			System.out.println("Turn of Player 1");
-			if (Player1 instanceof HumanPlayer) showPossibleMoves(gb.availableMoves(Player1.getColor()));
-			Coordinates p1move = Player1.nextMove(gb);
-			if (p1move != null) gb.makeMove(Player1.getColor(),p1move);
+			ArrayList<Coordinates> possibleMoves1 = gb.availableMoves(PlayerColor1);
+			if (Player1 instanceof HumanPlayer) showPossibleMoves(possibleMoves1);
+			Coordinates p1move = Player1.nextMove(gb,possibleMoves1);
+			if (p1move != null) gb.makeMove(PlayerColor1,p1move);
 			updateGameBoard();
 			
 			// Player2
-			System.out.println("Turn of Player 1");
-			if (Player2 instanceof HumanPlayer) showPossibleMoves(gb.availableMoves(Player2.getColor()));
-			Coordinates p2move = Player1.nextMove(gb);
-			if (p2move != null) gb.makeMove(Player1.getColor(),p2move);
+			System.out.println("Turn of Player 2");
+			ArrayList<Coordinates> possibleMoves2 = gb.availableMoves(PlayerColor2);
+			if (Player2 instanceof HumanPlayer) showPossibleMoves(possibleMoves2);
+			Coordinates p2move = Player2.nextMove(gb,possibleMoves2);
+			if (p2move != null) gb.makeMove(PlayerColor2,p2move);
 			updateGameBoard();
 		}
 		System.out.println("GameBoard full");

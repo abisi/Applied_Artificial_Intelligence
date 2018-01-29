@@ -45,26 +45,25 @@ public class GameBoard {
 		return true;
 	}
 	
-	private ArrayList<Coordinates> emptyNeighbours(Coordinates coord) { //Find all empty cases around one case
+	private ArrayList<Coordinates> neighboursOf(Coordinates coord, int Color) { //Find all empty cases around one case
 		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
 		
-		if (Board[coord.X-1][coord.Y] == 0 && isOnBoard(new Coordinates(coord.X-1,coord.Y))) 
-			result.add(new Coordinates(coord.X-1,coord.Y));
-		if (Board[coord.X+1][coord.Y] == 0 && isOnBoard(new Coordinates(coord.X+1,coord.Y))) 
-			result.add(new Coordinates(coord.X+1,coord.Y));
-		if (Board[coord.X][coord.Y-1] == 0 && isOnBoard(new Coordinates(coord.X,coord.Y-1))) 		
-			result.add(new Coordinates(coord.X,coord.Y-1));
-		if (Board[coord.X][coord.Y+1] == 0 && isOnBoard(new Coordinates(coord.X,coord.Y+1))) 	
-			result.add(new Coordinates(coord.X,coord.Y+1));	
-		if (Board[coord.X-1][coord.Y-1] == 0 && isOnBoard(new Coordinates(coord.X-1,coord.Y-1))) 
-			result.add(new Coordinates(coord.X-1,coord.Y-1));
-		if (Board[coord.X+1][coord.Y+1] == 0 && isOnBoard(new Coordinates(coord.X+1,coord.Y+1))) 	
-			result.add(new Coordinates(coord.X+1,coord.Y+1));
-		if (Board[coord.X+1][coord.Y-1] == 0 && isOnBoard(new Coordinates(coord.X+1,coord.Y-1))) 
-			result.add(new Coordinates(coord.X+1,coord.Y-1));
-		if (Board[coord.X-1][coord.Y+1] == 0 && isOnBoard(new Coordinates(coord.X-1,coord.Y+1))) 
-			result.add(new Coordinates(coord.X-1,coord.Y+1));
-		
+		if (isOnBoard(new Coordinates(coord.X-1,coord.Y))) 
+			if(Board[coord.X-1][coord.Y] == Color ) result.add(new Coordinates(coord.X-1,coord.Y));
+		if (isOnBoard(new Coordinates(coord.X+1,coord.Y))) 
+			if(Board[coord.X+1][coord.Y] == Color)result.add(new Coordinates(coord.X+1,coord.Y));
+		if (isOnBoard(new Coordinates(coord.X,coord.Y-1))) 		
+			if (Board[coord.X][coord.Y-1] == Color) result.add(new Coordinates(coord.X,coord.Y-1));
+		if (isOnBoard(new Coordinates(coord.X,coord.Y+1))) 	
+			if(Board[coord.X][coord.Y+1] == Color) result.add(new Coordinates(coord.X,coord.Y+1));	
+		if (isOnBoard(new Coordinates(coord.X-1,coord.Y-1))) 
+			if(Board[coord.X-1][coord.Y-1] == Color) result.add(new Coordinates(coord.X-1,coord.Y-1));
+		if (isOnBoard(new Coordinates(coord.X+1,coord.Y+1))) 	
+			if(Board[coord.X+1][coord.Y+1] == Color) result.add(new Coordinates(coord.X+1,coord.Y+1));
+		if (isOnBoard(new Coordinates(coord.X+1,coord.Y-1))) 
+			if(Board[coord.X+1][coord.Y-1] == Color) result.add(new Coordinates(coord.X+1,coord.Y-1));
+		if (isOnBoard(new Coordinates(coord.X-1,coord.Y+1))) 
+			if(Board[coord.X-1][coord.Y+1] == Color) result.add(new Coordinates(coord.X-1,coord.Y+1));
 		return result;
 		}
 	
@@ -92,7 +91,7 @@ public class GameBoard {
 		
 		for(int i = 0; i < opp.size(); i++) {
 			Coordinates opponent = opp.get(i);
-			potentialMoves = emptyNeighbours(opponent);  //all the EMPTY cases around an opponent stones
+			potentialMoves = neighboursOf(opponent,EMPTY);  //all the EMPTY cases around an opponent stones
 			for(int k = 0; k < potentialMoves.size(); k++) { //for each empty cases we check if there is in one end of sev. directions the current player's color
 				Coordinates possibleMove = potentialMoves.get(k);
 				
@@ -127,23 +126,25 @@ public class GameBoard {
 		Board[move.X][move.Y] = player;
 		
 		//Neighbouring opponent stones
-		ArrayList<Coordinates> closeOpponents = oppNeighbours(move, player);
+		int opponent = (player == WHITE) ? BLACK : WHITE;
+		ArrayList<Coordinates> closeOpponents = neighboursOf(move, opponent);
 		
-		//Flip stones inbetween move and the current player's own stones
+		//Flip stones in between move and the current player's own stones
 		for(int i = 0; i < closeOpponents.size(); i++) {
+			// opponent
+			Coordinates oppPos = closeOpponents.get(i);
 			
 			//directing vectors
-			int d_x = closeOpponents.get(i).X-move.X;
-			int d_y = closeOpponents.get(i).Y-move.Y;
+			int d_x = oppPos.X-move.X;
+			int d_y = oppPos.Y-move.Y;
 			
 			for(int lambda = 1; lambda < Board.length; lambda++) {
-				Coordinates pos = new Coordinates(closeOpponents.get(i).X + lambda*d_x, closeOpponents.get(i).Y + lambda*d_y);
+				Coordinates pos = new Coordinates(move.X + lambda*d_x, move.Y + lambda*d_y);
 				if (!isOnBoard(pos)) break;
 				if (Board[pos.X][pos.Y] == EMPTY) break; 
-				if (Board[pos.X][pos.Y] != player) continue;
+				if (Board[pos.X][pos.Y] == opponent) continue;
 				if (Board[pos.X][pos.Y] == player) {
-					Board[pos.X][pos.Y] = player;
-					for(int j = 0; j < lambda; j++) {
+					for(int j = 1; j < lambda; j++) {
 						Board[pos.X - j*d_x][pos.Y - j*d_y] = player;
 					}
 				}
@@ -151,26 +152,4 @@ public class GameBoard {
 		}
 	}
 	
-	private ArrayList<Coordinates> oppNeighbours(Coordinates coord, int player) { //Find all opponent neighbours
-		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
-		
-		if (Board[coord.X-1][coord.Y] != player && isOnBoard(new Coordinates(coord.X-1,coord.Y))) 
-			result.add(new Coordinates(coord.X-1,coord.Y));
-		if (Board[coord.X+1][coord.Y] != player && isOnBoard(new Coordinates(coord.X+1,coord.Y))) 
-			result.add(new Coordinates(coord.X+1,coord.Y));
-		if (Board[coord.X][coord.Y-1] != player && isOnBoard(new Coordinates(coord.X,coord.Y-1))) 		
-			result.add(new Coordinates(coord.X,coord.Y-1));
-		if (Board[coord.X][coord.Y+1] != player && isOnBoard(new Coordinates(coord.X,coord.Y+1))) 	
-			result.add(new Coordinates(coord.X,coord.Y+1));	
-		if (Board[coord.X-1][coord.Y-1] != player && isOnBoard(new Coordinates(coord.X-1,coord.Y-1))) 
-			result.add(new Coordinates(coord.X-1,coord.Y-1));
-		if (Board[coord.X+1][coord.Y+1] != player && isOnBoard(new Coordinates(coord.X+1,coord.Y+1))) 	
-			result.add(new Coordinates(coord.X+1,coord.Y+1));
-		if (Board[coord.X+1][coord.Y-1] != player && isOnBoard(new Coordinates(coord.X+1,coord.Y-1))) 
-			result.add(new Coordinates(coord.X+1,coord.Y-1));
-		if (Board[coord.X-1][coord.Y+1] != player && isOnBoard(new Coordinates(coord.X-1,coord.Y+1))) 
-			result.add(new Coordinates(coord.X-1,coord.Y+1));
-		
-		return result;
-		}
 }
