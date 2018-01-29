@@ -16,4 +16,12 @@ public class Coordinates {
 		Y = 0;
 	}
 	
+	public boolean equals(Coordinates coord) {
+		return (coord == null) ? false : (X == coord.X && Y == coord.Y);
+	}
+	
+	public String toString() {
+		return "[ " + X + " , " + Y + " ]";
+	}
+	
 }

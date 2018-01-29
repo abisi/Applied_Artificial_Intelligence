@@ -2,6 +2,8 @@ package Search;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
+
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -16,8 +18,8 @@ public class Reversi implements ActionListener {
     private static final String COLS = "ABCDEFGH";
     private static GameBoard gb;
     
-    private BasePlayer Player1;
-    private BasePlayer Player2;
+    private BasePlayer Player1 = new HumanPlayer();
+    private BasePlayer Player2 = new HumanPlayer();
 
     
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -38,6 +40,9 @@ public class Reversi implements ActionListener {
         frame.setMinimumSize(frame.getSize());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        
+        // start a new game
+        rvs.newGame();
 		
 	}
 	
@@ -46,8 +51,6 @@ public class Reversi implements ActionListener {
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	Reversi() {
 		initializeGUI();
-		
-		newGame();
 	}
 	
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,8 +74,6 @@ public class Reversi implements ActionListener {
         tools.setFloatable(false);
         GUI.add(tools, BorderLayout.PAGE_START);
         JButton newGameButton = new JButton("New Game");
-        newGameButton.putClientProperty( "X", -1);
-        newGameButton.putClientProperty( "Y", -1);
         newGameButton.putClientProperty( "newGame", true);
         newGameButton.addActionListener(this);
         tools.add(newGameButton);
@@ -91,8 +92,8 @@ public class Reversi implements ActionListener {
                 
             		b.putClientProperty( "X", i);
             		b.putClientProperty( "Y", j);
-            		b.putClientProperty( "newGame", false);
-            		b.addActionListener(this);
+            		b.addActionListener(Player1);
+            		b.addActionListener(Player2);
                 
             		ReversiBoard[i][j] = b;
             }
@@ -128,17 +129,8 @@ public class Reversi implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		JButton button = (JButton) e.getSource();
-		int x = (int) button.getClientProperty("X");
-		int y = (int) button.getClientProperty("Y");
 		boolean newGame = (boolean) button.getClientProperty("newGame");
-		
 		if (newGame) newGame();
-		else boardButtonPressed(x,y);
-	}
-	
-	public void boardButtonPressed(int x, int y) {
-		System.out.println("The button ["+ x +"," + y +"] was pressed.");
-		
 	}
 	
 	public void newGame() {
@@ -146,9 +138,10 @@ public class Reversi implements ActionListener {
 		// Create the Gameboard
 		gb = new GameBoard();
 		
-		// Create Player
-		Player1 = new BasePlayer(GameBoard.WHITE,GameBoard.BLACK);
-		Player2 = new BasePlayer(GameBoard.BLACK,GameBoard.WHITE);
+		// Give away colors
+		Player1.initialize(GameBoard.WHITE);
+		Player2.initialize(GameBoard.BLACK);
+
 		
 		// create starting position
 		gb.makeMove(Player1.getColor(),new Coordinates(4,3));
@@ -159,13 +152,47 @@ public class Reversi implements ActionListener {
 		// update GameBoard
 		updateGameBoard();
 		
+		// start playing
+		play();
+		
 	}
 
-	public void updateGameBoard() {
+	private void play() {
+		System.out.println("Play");
+		
+		while(!gb.isFull()) {
+			
+			System.out.println("GameBoard not full");
+			
+			// Player1
+			System.out.println("Turn of Player 1");
+			if (Player1 instanceof HumanPlayer) showPossibleMoves(gb.availableMoves(Player1.getColor()));
+			Coordinates p1move = Player1.nextMove(gb);
+			if (p1move != null) gb.makeMove(Player1.getColor(),p1move);
+			updateGameBoard();
+			
+			// Player2
+			System.out.println("Turn of Player 1");
+			if (Player2 instanceof HumanPlayer) showPossibleMoves(gb.availableMoves(Player2.getColor()));
+			Coordinates p2move = Player1.nextMove(gb);
+			if (p2move != null) gb.makeMove(Player1.getColor(),p2move);
+			updateGameBoard();
+		}
+		System.out.println("GameBoard full");
+
+	}
+
+	private void showPossibleMoves(ArrayList<Coordinates> moves) {
+		System.out.println("showPossibleMoves");
+		for(int i = 0; i < moves.size() ; i++) {
+			ReversiBoard[moves.get(i).X][moves.get(i).Y].setBackground(Color.GRAY);
+		}
+	}
+	
+	private void updateGameBoard() {
 		System.out.println("Update GameBoard");
 		for(int i = 0; i < gb.getSize(); i++) {
 			for( int j = 0; j < gb.getSize(); j++) {
-				System.out.println("Board at [" + i + " , " + j + "] is " + gb.Board[i][j]);
 				if (gb.Board[i][j] == GameBoard.EMPTY) ReversiBoard[i][j].setBackground(Color.GREEN);
 				if (gb.Board[i][j] == GameBoard.WHITE) ReversiBoard[i][j].setBackground(Color.WHITE);
 				if (gb.Board[i][j] == GameBoard.BLACK) ReversiBoard[i][j].setBackground(Color.BLACK);

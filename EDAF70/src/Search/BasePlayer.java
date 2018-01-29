@@ -1,27 +1,14 @@
 package Search;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class BasePlayer {
+public interface BasePlayer extends ActionListener{
 
-	private int Color;
-	private int Opponent;
+	public void initialize(int myColor);
+
+	public int getColor();
 	
-	public BasePlayer(int color, int opponent) {
-		Color = color;
-		Opponent = opponent;
-	}
+	public Coordinates nextMove(GameBoard gb);	
 
-	public Coordinates nextMove(GameBoard gb) {
-		/*
-		if(!gb.isMoveAvailable(Color))
-			return null;
-		else
-			return new Coordinates(0,0);
-			*/
-		return new Coordinates(0,0);
-		
-	}	
-	
-	public int getColor() {
-		return Color;
-	}
+	public void actionPerformed(ActionEvent e);
 }

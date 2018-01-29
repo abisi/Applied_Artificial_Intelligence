@@ -11,7 +11,7 @@ public class GameBoard {
 	public static int BLACK = 1;
 	public static int WHITE = 2;
 	
-	public int[][] Board = new int[8][8];
+	public int[][] Board;
 	
 
 	public GameBoard() {
@@ -24,20 +24,28 @@ public class GameBoard {
 	
 	public boolean isFull() {
 		for(int i = 0; i < Board.length; i++) {
-			for(int j = 0; j > Board[i].length; j++) {
-				if (Board[i][j] == 0) return false;
+			for(int j = 0; j < Board[i].length; j++) {
+				if (Board[i][j] == GameBoard.EMPTY) return false;
 			}
 		}
 		return true;
 	}
 	
-	public boolean isOnBoard(Coordinates coord) {
+	public int countStones(int Player) {
+		int count = 0;
+		for(int i = 0; i < Board.length; i++) 
+			for(int j = 0; j < Board[i].length; j++) 
+				if (Board[i][j] == Player) count++;
+		return count;
+	}
+	
+	private boolean isOnBoard(Coordinates coord) {
 		if(coord.X > 7 | coord.Y > 7) return false;
 		if(coord.X < 0 | coord.Y < 0) return false;
 		return true;
 	}
 	
-	public ArrayList<Coordinates> emptyNeighbours(Coordinates coord) { //Find all empty cases around one case
+	private ArrayList<Coordinates> emptyNeighbours(Coordinates coord) { //Find all empty cases around one case
 		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
 		
 		if (Board[coord.X-1][coord.Y] == 0 && isOnBoard(new Coordinates(coord.X-1,coord.Y))) 
@@ -60,7 +68,7 @@ public class GameBoard {
 		return result;
 		}
 	
-	public ArrayList<Coordinates> opponentStones(int player){
+	private ArrayList<Coordinates> opponentStones(int player){
 		int opponent = (player == WHITE) ? BLACK : WHITE; 
 		ArrayList<Coordinates> oppStones = new ArrayList<Coordinates>();
 		
@@ -143,7 +151,7 @@ public class GameBoard {
 		}
 	}
 	
-	public ArrayList<Coordinates> oppNeighbours(Coordinates coord, int player) { //Find all opponent neighbours
+	private ArrayList<Coordinates> oppNeighbours(Coordinates coord, int player) { //Find all opponent neighbours
 		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
 		
 		if (Board[coord.X-1][coord.Y] != player && isOnBoard(new Coordinates(coord.X-1,coord.Y))) 
