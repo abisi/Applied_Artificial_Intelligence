@@ -20,10 +20,6 @@ public class GameBoard {
 		Board = new int[8][8];
 	}
 	
-	public GameBoard(int[][] gameboard) {
-		Board = gameboard;
-	}
-	
 	// ==========================================================
 	// Public Methods
 	// ==========================================================
@@ -33,15 +29,17 @@ public class GameBoard {
 	}
 	
 	public GameBoard clone() {
-		return new GameBoard(Board);
+		GameBoard clone =  new GameBoard();
+		for(int i = 0; i < clone.Board.length; i++) 
+			for(int j = 0; j < clone.Board[i].length; j++) 
+				clone.Board[i][j] = Board[i][j];
+		return clone;
 	}
 	
 	public boolean isFull() {
-		for(int i = 0; i < Board.length; i++) {
-			for(int j = 0; j < Board[i].length; j++) {
+		for(int i = 0; i < Board.length; i++) 
+			for(int j = 0; j < Board[i].length; j++) 
 				if (Board[i][j] == GameBoard.EMPTY) return false;
-			}
-		}
 		return true;
 	}
 	

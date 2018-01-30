@@ -9,6 +9,8 @@ public class MinMaxPlayer implements BasePlayer {
 	// Private Members
 	// ==========================================================
 	private int Color = 0;
+	private int Opponent = 0;
+	private long TimeOut;
 	
 	// ==========================================================
 	// Constructor
@@ -18,12 +20,29 @@ public class MinMaxPlayer implements BasePlayer {
 	}
 	
 	// ==========================================================
+	// Private Methods
+	// ==========================================================
+	private int evaluateMe(GameBoard gb) {
+		return gb.countStones(Color);
+	}
+	
+	private int evaluateOp(GameBoard gb) {
+		return gb.countStones(Opponent);
+	}
+	
+	private Move MaxMin(GameBoard gb, int depth, int maxDepth, int a, int b) {
+		return null;
+	}
+	
+	// ==========================================================
 	// Base Player Methods
 	// ==========================================================
 	
 	@Override
-	public void initialize(int myColor) {
+	public void initialize(int myColor, long timeOut) {
 		Color = myColor;
+		TimeOut = timeOut;
+		Opponent = (Color == GameBoard.WHITE) ? GameBoard.BLACK : GameBoard.WHITE;
 
 	}
 

@@ -10,6 +10,7 @@ public class RandomPlayer implements BasePlayer {
 	// ==========================================================
 	private int Color = 0;
 	private Random rand = new Random();
+	private long TimeOut;
 	
 	// ==========================================================
 	// Constructor
@@ -24,8 +25,9 @@ public class RandomPlayer implements BasePlayer {
 		
 	
 	@Override
-	public void initialize(int myColor) {
+	public void initialize(int myColor, long timeOut) {
 		Color = myColor;
+		TimeOut = timeOut;
 
 	}
 
@@ -36,13 +38,31 @@ public class RandomPlayer implements BasePlayer {
 
 	@Override
 	public Coordinates nextMove(GameBoard gb, ArrayList<Coordinates> possibleMoves) {
+		
+		// Save start Time
+		long StartTime = System.currentTimeMillis();
+		
 		// return null if no move is available
 		if (possibleMoves.isEmpty()) return null;
 		
 		// else return a random move out of the possible moves
 		int randIndex = rand.nextInt(possibleMoves.size());
+		Coordinates randomMove = possibleMoves.get(randIndex);
 		
-		return possibleMoves.get(randIndex);
+		// Wait till the timeOut time has passed
+		long millisToWait = TimeOut - (System.currentTimeMillis() - StartTime);
+		if (millisToWait > 0) {
+			try {
+				Thread.sleep(millisToWait);
+				System.out.println("return nextMove");
+				return randomMove;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("return nextMove");
+		return randomMove;	
 	}
 
 	@Override

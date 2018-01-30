@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public interface BasePlayer extends ActionListener{
 
-	public void initialize(int myColor);
+	public void initialize(int myColor, long timeOut);
 
 	public int getColor();
 	

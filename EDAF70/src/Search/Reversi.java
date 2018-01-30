@@ -9,7 +9,8 @@ public class Reversi {
 	private UserInterface UI;
     private static GameBoard gb;
     private BasePlayer Player1 = new HumanPlayer();
-    private BasePlayer Player2 = new HumanPlayer();
+    private BasePlayer Player2 = new GreedyPlayer();
+    private long TimeOut = 2000;
     
     // ==========================================================
  	// Main Method
@@ -38,8 +39,8 @@ public class Reversi {
 	public void newGame() {
 		
 		// Give away colors
-		Player1.initialize(GameBoard.WHITE);
-		Player2.initialize(GameBoard.BLACK);
+		Player1.initialize(GameBoard.WHITE, TimeOut);
+		Player2.initialize(GameBoard.BLACK, TimeOut);
 		
 		// create starting position
 		gb.makeMove(Player1.getColor(),new Coordinates(4,3));
@@ -81,6 +82,9 @@ public class Reversi {
 			Coordinates p2move = Player2.nextMove(gb,possibleMoves2);
 			if (p2move != null) gb.makeMove(PlayerColor2,p2move);
 			UI.updateGameBoard(gb);
+			
+			// stop the game if both players cannot play anymore
+			if(possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) break;
 		}
 	}
 	

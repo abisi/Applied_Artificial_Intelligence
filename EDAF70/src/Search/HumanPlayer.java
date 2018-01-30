@@ -26,7 +26,7 @@ public class HumanPlayer implements BasePlayer, ActionListener
 	// ==========================================================
 
 	@Override
-	public void initialize(int myColor) {
+	public void initialize(int myColor, long timeOut) {
 		Color = myColor;
 	}
 	

@@ -9,6 +9,7 @@ public class GreedyPlayer implements BasePlayer {
 	// Private Members
 	// ==========================================================
 	private int Color = 0;
+	private long TimeOut = 0;
 	
 	// ==========================================================
 	// Constructor
@@ -23,8 +24,9 @@ public class GreedyPlayer implements BasePlayer {
 		
 	
 	@Override
-	public void initialize(int myColor) {
+	public void initialize(int myColor, long timeOut) {
 		Color = myColor;
+		TimeOut = timeOut;
 
 	}
 
@@ -35,8 +37,14 @@ public class GreedyPlayer implements BasePlayer {
 
 	@Override
 	public Coordinates nextMove(GameBoard gb, ArrayList<Coordinates> possibleMoves) {
+
+		// Save start Time
+		long StartTime = System.currentTimeMillis();
+		
 		// return null if no move is available
 		if (possibleMoves.isEmpty()) return null; 
+		// if there is only one element, return the element
+		if (possibleMoves.size() == 1) return possibleMoves.get(0);
 		
 		// implement the greedy move
 		Coordinates greedyMove = null;
@@ -54,6 +62,19 @@ public class GreedyPlayer implements BasePlayer {
 			
 		}
 		
+		// Wait till the timeOut time has passed
+		long millisToWait = TimeOut - (System.currentTimeMillis() - StartTime);
+		if (millisToWait > 0) {
+			try {
+				Thread.sleep(millisToWait);
+				System.out.println("return nextMove");
+				return greedyMove;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.out.println("return nextMove");
 		return greedyMove;
 	}
 
