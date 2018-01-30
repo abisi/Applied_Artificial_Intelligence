@@ -1,23 +1,32 @@
 package Search;
-/*
- * A class that represents the gameboard, stones and possible moves.
- */
 
 import java.util.ArrayList;
 
 public class GameBoard {
 
+	// ==========================================================
+	// Private Members
+	// ==========================================================
 	public static int EMPTY = 0;
 	public static int BLACK = 1;
 	public static int WHITE = 2;
 	
+	// ==========================================================
+	// Public Members
+	// ==========================================================
 	public int[][] Board;
 	
-
+	// ==========================================================
+	// Constructor
+	// ==========================================================
 	public GameBoard() {
 		Board = new int[8][8];
 	}
 	
+	// ==========================================================
+	// Public Methods
+	// ==========================================================
+
 	public int getSize() {
 		return Board.length;
 	}
@@ -39,61 +48,19 @@ public class GameBoard {
 		return count;
 	}
 	
-	private boolean isOnBoard(Coordinates coord) {
-		if(coord.X > 7 | coord.Y > 7) return false;
-		if(coord.X < 0 | coord.Y < 0) return false;
-		return true;
-	}
-	
-	private ArrayList<Coordinates> neighboursOf(Coordinates coord, int Color) { //Find all empty cases around one case
-		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
-		
-		if (isOnBoard(new Coordinates(coord.X-1,coord.Y))) 
-			if(Board[coord.X-1][coord.Y] == Color ) result.add(new Coordinates(coord.X-1,coord.Y));
-		if (isOnBoard(new Coordinates(coord.X+1,coord.Y))) 
-			if(Board[coord.X+1][coord.Y] == Color)result.add(new Coordinates(coord.X+1,coord.Y));
-		if (isOnBoard(new Coordinates(coord.X,coord.Y-1))) 		
-			if (Board[coord.X][coord.Y-1] == Color) result.add(new Coordinates(coord.X,coord.Y-1));
-		if (isOnBoard(new Coordinates(coord.X,coord.Y+1))) 	
-			if(Board[coord.X][coord.Y+1] == Color) result.add(new Coordinates(coord.X,coord.Y+1));	
-		if (isOnBoard(new Coordinates(coord.X-1,coord.Y-1))) 
-			if(Board[coord.X-1][coord.Y-1] == Color) result.add(new Coordinates(coord.X-1,coord.Y-1));
-		if (isOnBoard(new Coordinates(coord.X+1,coord.Y+1))) 	
-			if(Board[coord.X+1][coord.Y+1] == Color) result.add(new Coordinates(coord.X+1,coord.Y+1));
-		if (isOnBoard(new Coordinates(coord.X+1,coord.Y-1))) 
-			if(Board[coord.X+1][coord.Y-1] == Color) result.add(new Coordinates(coord.X+1,coord.Y-1));
-		if (isOnBoard(new Coordinates(coord.X-1,coord.Y+1))) 
-			if(Board[coord.X-1][coord.Y+1] == Color) result.add(new Coordinates(coord.X-1,coord.Y+1));
-		return result;
-		}
-	
-	private ArrayList<Coordinates> opponentStones(int player){
-		int opponent = (player == WHITE) ? BLACK : WHITE; 
-		ArrayList<Coordinates> oppStones = new ArrayList<Coordinates>();
-		
-		for(int i = 0; i < Board.length; i++) {
-			for(int j = 0; j < Board[i].length; j++) {
-				if (Board[i][j] == opponent)
-					oppStones.add(new Coordinates(i,j));
-			}
-		}
-		return oppStones;	
-	}
-	
 	public ArrayList<Coordinates> availableMoves(int player) {
 		
 		// define the opponent player
 		int op = (player == BLACK) ? WHITE : BLACK;
 		
 		ArrayList<Coordinates> finalMoves = new ArrayList<Coordinates>(); 
-		ArrayList<Coordinates> potentialMoves = new ArrayList<Coordinates>(); //intermediate moves (requiring more constraints)
 		ArrayList<Coordinates> opp = opponentStones(player);  //opponent stones
 		
-		for(int i = 0; i < opp.size(); i++) {
-			Coordinates opponent = opp.get(i);
-			potentialMoves = neighboursOf(opponent,EMPTY);  //all the EMPTY cases around an opponent stones
-			for(int k = 0; k < potentialMoves.size(); k++) { //for each empty cases we check if there is in one end of sev. directions the current player's color
-				Coordinates possibleMove = potentialMoves.get(k);
+		for(Coordinates opponent : opp) {
+			
+			ArrayList<Coordinates> potentialMoves = neighborsOf(opponent,EMPTY);  //all the EMPTY cases around an opponent stones
+			
+			for(Coordinates possibleMove : potentialMoves) { //for each empty cases we check if there is in one end of sev. directions the current player's color
 				
 				//directing vectors
 				int d_x = opponent.X-possibleMove.X;
@@ -120,19 +87,17 @@ public class GameBoard {
 	}	
 	
 	public void makeMove(int player, Coordinates move) {
-		// Check whether the move is a legal move
+
 		System.out.println("makeMove");
 		//Place the new stone
 		Board[move.X][move.Y] = player;
 		
-		//Neighbouring opponent stones
+		//Neighboring opponent stones
 		int opponent = (player == WHITE) ? BLACK : WHITE;
-		ArrayList<Coordinates> closeOpponents = neighboursOf(move, opponent);
+		ArrayList<Coordinates> closeOpponents = neighborsOf(move, opponent);
 		
 		//Flip stones in between move and the current player's own stones
-		for(int i = 0; i < closeOpponents.size(); i++) {
-			// opponent
-			Coordinates oppPos = closeOpponents.get(i);
+		for(Coordinates oppPos : closeOpponents) {
 			
 			//directing vectors
 			int d_x = oppPos.X-move.X;
@@ -152,4 +117,46 @@ public class GameBoard {
 		}
 	}
 	
+	// ==========================================================
+	// Private Methods
+	// ==========================================================
+
+	private boolean isOnBoard(Coordinates coord) {
+		if(coord.X > 7 | coord.Y > 7) return false;
+		if(coord.X < 0 | coord.Y < 0) return false;
+		return true;
+	}
+	
+	private ArrayList<Coordinates> neighborsOf(Coordinates coord, int Color) { //Find all empty cases around one case
+		ArrayList<Coordinates> result = new ArrayList<Coordinates>();
+		
+		if (isOnBoard(new Coordinates(coord.X-1,coord.Y))) 
+			if(Board[coord.X-1][coord.Y] == Color ) result.add(new Coordinates(coord.X-1,coord.Y));
+		if (isOnBoard(new Coordinates(coord.X+1,coord.Y))) 
+			if(Board[coord.X+1][coord.Y] == Color)result.add(new Coordinates(coord.X+1,coord.Y));
+		if (isOnBoard(new Coordinates(coord.X,coord.Y-1))) 		
+			if (Board[coord.X][coord.Y-1] == Color) result.add(new Coordinates(coord.X,coord.Y-1));
+		if (isOnBoard(new Coordinates(coord.X,coord.Y+1))) 	
+			if(Board[coord.X][coord.Y+1] == Color) result.add(new Coordinates(coord.X,coord.Y+1));	
+		if (isOnBoard(new Coordinates(coord.X-1,coord.Y-1))) 
+			if(Board[coord.X-1][coord.Y-1] == Color) result.add(new Coordinates(coord.X-1,coord.Y-1));
+		if (isOnBoard(new Coordinates(coord.X+1,coord.Y+1))) 	
+			if(Board[coord.X+1][coord.Y+1] == Color) result.add(new Coordinates(coord.X+1,coord.Y+1));
+		if (isOnBoard(new Coordinates(coord.X+1,coord.Y-1))) 
+			if(Board[coord.X+1][coord.Y-1] == Color) result.add(new Coordinates(coord.X+1,coord.Y-1));
+		if (isOnBoard(new Coordinates(coord.X-1,coord.Y+1))) 
+			if(Board[coord.X-1][coord.Y+1] == Color) result.add(new Coordinates(coord.X-1,coord.Y+1));
+		return result;
+		}
+	
+	private ArrayList<Coordinates> opponentStones(int player){
+		int opponent = (player == WHITE) ? BLACK : WHITE; 
+		ArrayList<Coordinates> oppStones = new ArrayList<Coordinates>();
+		
+		for(int i = 0; i < Board.length; i++)
+			for(int j = 0; j < Board[i].length; j++)
+				if (Board[i][j] == opponent)
+					oppStones.add(new Coordinates(i,j));
+		return oppStones;	
+	}
 }

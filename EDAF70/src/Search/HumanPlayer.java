@@ -8,15 +8,23 @@ import javax.swing.JButton;
 
 public class HumanPlayer implements BasePlayer, ActionListener
 {
-	
+	// ==========================================================
+	// Private Members
+	// ==========================================================
 	private int Color;
-	
 	private Coordinates Move;
 	
+	// ==========================================================
+	// Constructor
+	// ==========================================================
 	public HumanPlayer() {
 		System.out.println("Created human player");
 	}
 	
+	// ==========================================================
+	// Public Methods
+	// ==========================================================
+
 	@Override
 	public void initialize(int myColor) {
 		Color = myColor;
@@ -29,10 +37,7 @@ public class HumanPlayer implements BasePlayer, ActionListener
 	
 	@Override
 	public Coordinates nextMove(GameBoard gb, ArrayList<Coordinates> possibleMoves) {
-		System.out.println("nextMove");
-		
-		printArrayList(possibleMoves);
-		
+				
 		// return null if no moves are possible
 		if (possibleMoves.isEmpty()) return null;
 		
@@ -62,13 +67,5 @@ public class HumanPlayer implements BasePlayer, ActionListener
 		Move = new Coordinates(x,y);
 		System.out.println("Move uptdated to:" + Move.toString());
 	}
-	
-	public void printArrayList(ArrayList<Coordinates> coord) {
-		for (int i = 0; i < coord.size(); i++) {
-			System.out.println(coord.get(i).toString());
-		}
-	}
-	
-	
 
 }

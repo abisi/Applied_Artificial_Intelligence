@@ -1,11 +1,17 @@
 package Search;
-/*
- * Class that represents coordinates on the gameboard.
- */
+
 public class Coordinates {
+
+	// ==========================================================
+	// Public Members
+	// ==========================================================
 	public int X;
 	public int Y;
 	
+	
+	// ==========================================================
+	// Constructors
+	// ==========================================================
 	public Coordinates(int x, int y) {
 		this.X = x;
 		this.Y = y;
@@ -15,6 +21,10 @@ public class Coordinates {
 		X = 0;
 		Y = 0;
 	}
+	
+	// ==========================================================
+	// Public Methods
+	// ==========================================================
 	
 	public boolean equals(Coordinates coord) {
 		return (coord == null) ? false : (X == coord.X && Y == coord.Y);

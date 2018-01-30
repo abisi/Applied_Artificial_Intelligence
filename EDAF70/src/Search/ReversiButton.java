@@ -7,6 +7,8 @@ import javax.swing.border.LineBorder;
  
 public class ReversiButton extends JButton {
  
+	private static final long serialVersionUID = 1L;  
+	
 	public ReversiButton(String label) {
     super(label);
   
