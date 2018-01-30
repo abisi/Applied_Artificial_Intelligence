@@ -38,7 +38,6 @@ public class UserInterface {
     } 
     
     public void updateGameBoard(GameBoard gb) {
-		System.out.println("Update GameBoard");
 		for(int i = 0; i < gb.getSize(); i++) {
 			for( int j = 0; j < gb.getSize(); j++) {
 				if (gb.Board[i][j] == GameBoard.EMPTY) ReversiBoard[i][j].setBackground(Color.GREEN);
@@ -49,7 +48,6 @@ public class UserInterface {
 	}
     
     public void showPossibleMoves(ArrayList<Coordinates> moves) {
-		System.out.println("showPossibleMoves");
 		for(int i = 0; i < moves.size() ; i++) {
 			ReversiBoard[moves.get(i).X][moves.get(i).Y].setBackground(Color.GRAY);
 		}

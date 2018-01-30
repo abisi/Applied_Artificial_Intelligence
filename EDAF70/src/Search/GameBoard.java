@@ -88,7 +88,6 @@ public class GameBoard {
 	
 	public void makeMove(int player, Coordinates move) {
 
-		System.out.println("makeMove");
 		//Place the new stone
 		Board[move.X][move.Y] = player;
 		

@@ -69,7 +69,6 @@ public class Reversi {
 		while(!gb.isFull()) {
 			
 			// Player1
-			System.out.println("Turn of Player 1");
 			ArrayList<Coordinates> possibleMoves1 = gb.availableMoves(PlayerColor1);
 			if (Player1 instanceof HumanPlayer) UI.showPossibleMoves(possibleMoves1);
 			Coordinates p1move = Player1.nextMove(gb,possibleMoves1);
@@ -77,7 +76,6 @@ public class Reversi {
 			UI.updateGameBoard(gb);
 			
 			// Player2
-			System.out.println("Turn of Player 2");
 			ArrayList<Coordinates> possibleMoves2 = gb.availableMoves(PlayerColor2);
 			if (Player2 instanceof HumanPlayer) UI.showPossibleMoves(possibleMoves2);
 			Coordinates p2move = Player2.nextMove(gb,possibleMoves2);
