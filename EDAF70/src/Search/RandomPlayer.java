@@ -1,20 +1,21 @@
 package Search;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import java.util.*;
 
-public class GreedyPlayer implements BasePlayer {
+public class RandomPlayer implements BasePlayer {
 
 	// ==========================================================
 	// Private Members
 	// ==========================================================
 	private int Color = 0;
+	private Random rand = new Random();
 	
 	// ==========================================================
 	// Constructor
 	// ==========================================================
-	public GreedyPlayer() {
-		System.out.println("Created Greedy Player");
+	public RandomPlayer() {
+		System.out.println("Created Random Player");
 	}
 	
 	// ==========================================================
@@ -36,25 +37,12 @@ public class GreedyPlayer implements BasePlayer {
 	@Override
 	public Coordinates nextMove(GameBoard gb, ArrayList<Coordinates> possibleMoves) {
 		// return null if no move is available
-		if (possibleMoves.isEmpty()) return null; 
+		if (possibleMoves.isEmpty()) return null;
 		
-		// implement the greedy move
-		Coordinates greedyMove = null;
-		int maxStones = 0;
+		// else return a random move out of the possible moves
+		int randIndex = rand.nextInt(possibleMoves.size());
 		
-		for(Coordinates move : possibleMoves) {
-			
-			GameBoard copy = gb.clone();
-			copy.makeMove(Color, move);
-			
-			if (maxStones < copy.countStones(Color)) {
-				maxStones = copy.countStones(Color);
-				greedyMove = move;
-			}
-			
-		}
-		
-		return greedyMove;
+		return possibleMoves.get(randIndex);
 	}
 
 	@Override

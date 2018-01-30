@@ -5,22 +5,23 @@ import java.util.ArrayList;
 public class GameBoard {
 
 	// ==========================================================
-	// Private Members
+	// Public Members
 	// ==========================================================
 	public static int EMPTY = 0;
 	public static int BLACK = 1;
 	public static int WHITE = 2;
 	
-	// ==========================================================
-	// Public Members
-	// ==========================================================
 	public int[][] Board;
 	
 	// ==========================================================
-	// Constructor
+	// Constructors
 	// ==========================================================
 	public GameBoard() {
 		Board = new int[8][8];
+	}
+	
+	public GameBoard(int[][] gameboard) {
+		Board = gameboard;
 	}
 	
 	// ==========================================================
@@ -29,6 +30,10 @@ public class GameBoard {
 
 	public int getSize() {
 		return Board.length;
+	}
+	
+	public GameBoard clone() {
+		return new GameBoard(Board);
 	}
 	
 	public boolean isFull() {
