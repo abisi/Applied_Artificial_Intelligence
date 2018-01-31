@@ -6,22 +6,19 @@ public class Move {
 	// Public Members
 	// ==========================================================
 	public Coordinates Coord;
-	public int Value;
-	public boolean Cut;
+	public int Value = 0;
 	
 	// ==========================================================
 	// Constructors
 	// ==========================================================
-	public Move(Coordinates coord, int value, boolean cut) {
+	public Move(Coordinates coord, int value) {
 		Coord = coord;
 		Value = value;
-		Cut = cut;
 	}
 	
 	public Move(){
 		Coord = new Coordinates();
-		Value = 0;
-		Cut = false;
+		Value = -1;
 	}
 	
 }

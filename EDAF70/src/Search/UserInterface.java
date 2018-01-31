@@ -48,8 +48,8 @@ public class UserInterface {
 	}
     
     public void showPossibleMoves(ArrayList<Coordinates> moves) {
-		for(int i = 0; i < moves.size() ; i++) {
-			ReversiBoard[moves.get(i).X][moves.get(i).Y].setBackground(Color.GRAY);
+		for(Coordinates move : moves) {
+			ReversiBoard[move.X][move.Y].setBackground(Color.GRAY);
 		}
 	}
     
@@ -59,7 +59,6 @@ public class UserInterface {
     private void setupFrame() {
 		frame = new JFrame("Reversi by se4054pf-s and ax5006bi-s");
         frame.add(GUIPanel);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationByPlatform(true);
         frame.pack();
         frame.setMinimumSize(frame.getSize());
@@ -73,7 +72,7 @@ public class UserInterface {
 		GUIPanel.setBorder(new EmptyBorder(5,5,5,5));
 		
 		// Make space for later user
-		JLabel log = new JLabel("J");
+		JLabel log = new JLabel("?");
         GUIPanel.add(log, BorderLayout.LINE_START);
         
         // Create the Panel for the ReversiBoard

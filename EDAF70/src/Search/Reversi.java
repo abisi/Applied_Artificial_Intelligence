@@ -12,10 +12,10 @@ public class Reversi {
     
     // Define the two player types
     private BasePlayer Player1 = new HumanPlayer();
-    private BasePlayer Player2 = new GreedyPlayer();
+    private BasePlayer Player2 = new MinMaxPlayer();
     
     // time Limit in milliseconds
-    private long TimeOut = 2000;
+    private long TimeOut = 4000;
     
     // ==========================================================
  	// Main Method
