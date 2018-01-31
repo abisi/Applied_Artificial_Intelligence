@@ -11,7 +11,7 @@ public class MinMaxPlayer implements BasePlayer {
 	private int Color = 0;
 	private int Opponent = 0;
 	private long TimeOut = 0;
-	private int MaxDepth = 4;
+	private int MaxDepth = 5;
 	private long StartTime = 0;
 	
 	// ==========================================================
@@ -30,10 +30,15 @@ public class MinMaxPlayer implements BasePlayer {
 	
 	private Move Max(GameBoard gb, int depth, int maxDepth) {
 		// check for timeOut
-		if (isTimeOver()) return new Move(null, evaluate(gb,Color));
+		if (isTimeOver()) {
+			System.out.println("Max: Time is over.");
+			return new Move(null, evaluate(gb,Color));
+		}
 		
 		// check if max depth is reached
-		if (depth == maxDepth) return new Move(null, evaluate(gb,Color));
+		if (depth == maxDepth) {
+			return new Move(null, evaluate(gb,Color));
+		}
 		
 		// if no moves are available for max
 		if(!gb.isMoveAvailable(Color)) {
@@ -46,9 +51,11 @@ public class MinMaxPlayer implements BasePlayer {
 			}
 		}
 		
+
+		
 		// determine possible moves
 		ArrayList<Coordinates> possibleMoves = gb.availableMoves(Color);
-		Move bestMove = new Move(new Coordinates(),Integer.MIN_VALUE);
+		Move bestMove = new Move(null,Integer.MIN_VALUE);
 		
 		// select the best move
 		for (Coordinates move : possibleMoves) {
@@ -57,7 +64,8 @@ public class MinMaxPlayer implements BasePlayer {
 			Move nextMove = Min(copy,depth+1,maxDepth);
 		
 			if (nextMove.Value > bestMove.Value) {
-				bestMove = nextMove;
+				bestMove.Coord = move;
+				bestMove.Value = nextMove.Value;
 			}
 			
 		}
@@ -66,15 +74,20 @@ public class MinMaxPlayer implements BasePlayer {
 	
 	private Move Min(GameBoard gb, int depth, int maxDepth) {
 		// check for timeOut
-		if (isTimeOver()) return new Move(null, evaluate(gb,Color));
+		if (isTimeOver()) {
+			System.out.println("Min: Time is over.");
+			return new Move(null, evaluate(gb,Color));
+		}
 		
 		// check if max depth is reached
-		if (depth == maxDepth) return new Move(null, evaluate(gb,Color));
-		
+		if (depth == maxDepth) {
+			return new Move(null, evaluate(gb,Color));
+		}
+				
 		// if no moves are available for min
-		if(!gb.isMoveAvailable(Opponent)) {
+		if(gb.availableMoves(Opponent).isEmpty()) {
 			// if moves are available for max
-			if(gb.isMoveAvailable(Color)) {
+			if(!gb.availableMoves(Color).isEmpty()) {
 				Move nextMove = Max(gb, depth + 1, maxDepth);
 				return new Move(null, nextMove.Value);
 			} else {
@@ -82,18 +95,20 @@ public class MinMaxPlayer implements BasePlayer {
 			}
 		}
 		
+		
 		// determine possible moves
 		ArrayList<Coordinates> possibleMoves = gb.availableMoves(Opponent);
-		Move bestMove = new Move(new Coordinates(),Integer.MAX_VALUE);
+		Move bestMove = new Move(null,Integer.MAX_VALUE);
 		
 		// select the best move
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Opponent,move);
-			Move nextMove = Min(copy, depth+1, maxDepth);
+			Move nextMove = Max(copy, depth+1, maxDepth);
 		
 			if (nextMove.Value < bestMove.Value) {
-				bestMove = nextMove;
+				bestMove.Coord = move;
+				bestMove.Value = nextMove.Value;
 			}
 			
 		}
@@ -101,7 +116,7 @@ public class MinMaxPlayer implements BasePlayer {
 	}
 	
 	private boolean isTimeOver() {
-		return (System.currentTimeMillis() - StartTime < TimeOut) ? false : true;
+		return ((System.currentTimeMillis() - StartTime) < TimeOut) ? false : true;
 	}
 	
 	// ==========================================================
@@ -127,6 +142,7 @@ public class MinMaxPlayer implements BasePlayer {
 		Move nextMove = Max(gb,0,MaxDepth);
 		
 		// Wait till the timeOut time has passed
+		
 		long millisToWait = TimeOut - (System.currentTimeMillis() - StartTime);
 		if (millisToWait > 0) {
 			try {

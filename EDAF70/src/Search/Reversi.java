@@ -75,6 +75,7 @@ public class Reversi {
 		while(!gb.isFull()) {
 			
 			// Player1
+			UI.updateGameBoard(gb);
 			ArrayList<Coordinates> possibleMoves1 = gb.availableMoves(PlayerColor1);
 			UI.showPossibleMoves(possibleMoves1);
 			Coordinates p1move = Player1.nextMove(gb,possibleMoves1);
@@ -82,6 +83,7 @@ public class Reversi {
 			UI.updateGameBoard(gb);
 			
 			// Player2
+			UI.updateGameBoard(gb);
 			ArrayList<Coordinates> possibleMoves2 = gb.availableMoves(PlayerColor2);
 			UI.showPossibleMoves(possibleMoves2);
 			Coordinates p2move = Player2.nextMove(gb,possibleMoves2);
