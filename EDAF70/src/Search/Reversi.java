@@ -43,9 +43,17 @@ public class Reversi {
  	// ========================================================== 
 	public void newGame() {
 		
+		// Ask the player 1 about the color
+		int col = (Player1 instanceof HumanPlayer) ? UI.chooseColor() : GameBoard.WHITE;
+		int PlayerColor1 = (col == 0) ? GameBoard.WHITE : GameBoard.BLACK;
+		int PlayerColor2 = (PlayerColor1 == GameBoard.WHITE) ? GameBoard.BLACK : GameBoard.WHITE;
+		
+		// Define the time limit
+		TimeOut = Long.valueOf(1000 * UI.chooseTimeLimit());
+		
 		// Give away colors
-		Player1.initialize(GameBoard.WHITE, TimeOut);
-		Player2.initialize(GameBoard.BLACK, TimeOut);
+		Player1.initialize(PlayerColor1, TimeOut);
+		Player2.initialize(PlayerColor2, TimeOut);
 		
 		// create starting position
 		gb.makeMove(Player1.getColor(),new Coordinates(4,3));

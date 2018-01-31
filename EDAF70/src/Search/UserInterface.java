@@ -53,6 +53,34 @@ public class UserInterface {
 		}
 	}
     
+    public int chooseColor() {
+    	
+    		Object[] options = {"WHITE", "BLACK"};
+    		return JOptionPane.showOptionDialog(
+				frame,
+				"Would you rather play the black or the white player?",
+				"Player 1: Choose your Color",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,     //do not use a custom Icon
+				options,  //the titles of buttons
+				options[1]); //default button title
+    }
+    
+    public int chooseTimeLimit() {
+    		Object[] possibilities = {"1","2","3","4","5","6"};
+    		String n = (String)JOptionPane.showInputDialog(
+    	                    frame,
+    	                    "How many seconds should the time limit be?",
+    	                    "Choose time limit",
+    	                    JOptionPane.PLAIN_MESSAGE,
+    	                    null,
+    	                    possibilities,
+    	                    possibilities[0]);
+    		return Integer.parseInt(n);
+    	
+    }
+    
     // ==========================================================
   	// Private Methods
   	// ========================================================== 
