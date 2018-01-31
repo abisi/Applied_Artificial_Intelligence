@@ -90,7 +90,7 @@ public class MinMaxPlayer implements BasePlayer {
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Opponent,move);
-			Move nextMove = Min(copy,depth+1,maxDepth);
+			Move nextMove = Min(copy, depth+1, maxDepth);
 		
 			if (nextMove.Value < bestMove.Value) {
 				bestMove = nextMove;
