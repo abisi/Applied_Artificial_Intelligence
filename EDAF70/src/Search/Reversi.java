@@ -6,10 +6,15 @@ public class Reversi {
 	// ==========================================================
 	// Private Members
 	// ==========================================================
+	// Userface and game board
 	private UserInterface UI;
     private static GameBoard gb;
+    
+    // Define the two player types
     private BasePlayer Player1 = new HumanPlayer();
     private BasePlayer Player2 = new GreedyPlayer();
+    
+    // time Limit in milliseconds
     private long TimeOut = 2000;
     
     // ==========================================================
@@ -71,14 +76,14 @@ public class Reversi {
 			
 			// Player1
 			ArrayList<Coordinates> possibleMoves1 = gb.availableMoves(PlayerColor1);
-			if (Player1 instanceof HumanPlayer) UI.showPossibleMoves(possibleMoves1);
+			UI.showPossibleMoves(possibleMoves1);
 			Coordinates p1move = Player1.nextMove(gb,possibleMoves1);
 			if (p1move != null) gb.makeMove(PlayerColor1,p1move);
 			UI.updateGameBoard(gb);
 			
 			// Player2
 			ArrayList<Coordinates> possibleMoves2 = gb.availableMoves(PlayerColor2);
-			if (Player2 instanceof HumanPlayer) UI.showPossibleMoves(possibleMoves2);
+			UI.showPossibleMoves(possibleMoves2);
 			Coordinates p2move = Player2.nextMove(gb,possibleMoves2);
 			if (p2move != null) gb.makeMove(PlayerColor2,p2move);
 			UI.updateGameBoard(gb);

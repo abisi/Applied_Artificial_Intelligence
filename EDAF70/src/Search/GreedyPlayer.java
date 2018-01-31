@@ -67,9 +67,7 @@ public class GreedyPlayer implements BasePlayer {
 		if (millisToWait > 0) {
 			try {
 				Thread.sleep(millisToWait);
-				System.out.println("return nextMove");
-				return greedyMove;
-			} catch (InterruptedException e) {
+			} catch (InterruptedException e) { 
 				e.printStackTrace();
 			}
 		}

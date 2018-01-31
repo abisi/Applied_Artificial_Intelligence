@@ -54,8 +54,6 @@ public class RandomPlayer implements BasePlayer {
 		if (millisToWait > 0) {
 			try {
 				Thread.sleep(millisToWait);
-				System.out.println("return nextMove");
-				return randomMove;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

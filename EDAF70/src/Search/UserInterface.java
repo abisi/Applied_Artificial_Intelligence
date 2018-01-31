@@ -73,7 +73,8 @@ public class UserInterface {
 		GUIPanel.setBorder(new EmptyBorder(5,5,5,5));
 		
 		// Make space for later user
-        GUIPanel.add(new JLabel("?"), BorderLayout.LINE_START);
+		JLabel log = new JLabel("J");
+        GUIPanel.add(log, BorderLayout.LINE_START);
         
         // Create the Panel for the ReversiBoard
         reversiBoardPanel = new JPanel(new GridLayout(0, 9));
