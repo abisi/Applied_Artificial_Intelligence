@@ -101,6 +101,14 @@ public class Reversi {
 			// stop the game if both players cannot play anymore
 			if(possibleMoves1.isEmpty() && possibleMoves2.isEmpty()) break;
 		}
+		
+		// Game is over
+		int Player1Stones = gb.countStones(PlayerColor1);
+		int Player2Stones = gb.countStones(PlayerColor2);
+		
+		// show it to the player and exit
+		UI.endGame(Player1Stones,Player2Stones);
+		
 	}
 	
 }

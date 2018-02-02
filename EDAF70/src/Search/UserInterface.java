@@ -1,6 +1,7 @@
 package Search;
 
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -78,7 +79,20 @@ public class UserInterface {
     	                    possibilities,
     	                    possibilities[0]);
     		return Integer.parseInt(n);
+    }
+    
+    public void endGame(int StonesPlayer1, int StonesPlayer2) {
     	
+    		// construct the message 
+    		String message = "The result is \n"; 
+    		message += "( " + StonesPlayer1 + " : " + StonesPlayer2 + " )\n";
+    		message += "( Player 1 : Player 2 )";
+ 
+    		// display the result to the user
+    		JOptionPane.showMessageDialog(frame, message, "The game is over!", JOptionPane.INFORMATION_MESSAGE);
+    	
+    		// close the window
+    		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
     }
     
     // ==========================================================
