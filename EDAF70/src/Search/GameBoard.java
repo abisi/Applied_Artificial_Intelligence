@@ -43,6 +43,7 @@ public class GameBoard {
 		return true;
 	}
 	
+	//counts all the Player's stones on the board
 	public int countStones(int Player) {
 		int count = 0;
 		for(int i = 0; i < Board.length; i++) 
@@ -160,5 +161,49 @@ public class GameBoard {
 				if (Board[i][j] == opponent)
 					oppStones.add(new Coordinates(i,j));
 		return oppStones;	
+	}
+	
+	//checks whether a piece is stable
+	private boolean isStable(Coordinates coord) {
+		 if (isCorner(coord)) {
+			 if (areLinesFull(coord)) {
+				 return true;
+			 } else {
+				 return false;
+			 }
+		 } else {
+			 return false;
+		 }
+	}
+	
+	//checks whether a piece is in a corder
+	private boolean isCorner(Coordinates coord) {
+		if((coord.X==0) && (coord.Y == 0)) return true;
+		if((coord.X==0) && (coord.Y == 7)) return true;
+		if((coord.X==7) && (coord.Y == 0)) return true;
+		if((coord.X==7) && (coord.Y == 7)) return true;
+		else return false;
+	}
+	
+	//checks whether it is an X-square
+	private boolean isXSquare(Coordinates coord) {
+		if((coord.X==1) && (coord.Y == 1)) return true;
+		if((coord.X==1) && (coord.Y == 6)) return true;
+		if((coord.X==6) && (coord.Y == 1)) return true;
+		if((coord.X==6) && (coord.Y == 6)) return true;
+		else return false;
+	}
+	
+	//checks whether lines in all directions are full
+	private boolean areLinesFull(Coordinates coord) {
+		for(int i = 0; i < Board.length; ++i) {
+			if (Board[coord.X][i] == 0 && isOnBoard(coord)) return false;
+			if (Board[i][coord.Y] == 0 && isOnBoard(coord)) return false; 
+			if (Board[coord.X + i][coord.Y + i] == 0 && isOnBoard(coord))  return false;
+			if (Board[coord.X - i][coord.Y + i] == 0 && isOnBoard(coord)) return false;
+			if (Board[coord.X + i][coord.Y - i] == 0 && isOnBoard(coord)) return false;
+			if (Board[coord.X - i][coord.Y - i] == 0 && isOnBoard(coord)) return false; 
+		}
+		return true;
 	}
 }
