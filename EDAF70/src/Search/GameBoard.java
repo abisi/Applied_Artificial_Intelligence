@@ -120,6 +120,28 @@ public class GameBoard {
 		}
 	}
 	
+	//checks whether a piece is stable
+	public boolean isStable(Coordinates coord) {
+		 if (isCorner(coord)) {
+			 if (areLinesFull(coord)) {
+				 return true;
+			 } else {
+				 return false;
+			 }
+		 } else {
+			 return false;
+		 }
+	}
+	
+	//checks whether it is an X-square
+		public boolean isXSquare(Coordinates coord) {
+			if((coord.X==1) && (coord.Y == 1)) return true;
+			if((coord.X==1) && (coord.Y == 6)) return true;
+			if((coord.X==6) && (coord.Y == 1)) return true;
+			if((coord.X==6) && (coord.Y == 6)) return true;
+			else return false;
+		}
+	
 	// ==========================================================
 	// Private Methods
 	// ==========================================================
@@ -163,18 +185,6 @@ public class GameBoard {
 		return oppStones;	
 	}
 	
-	//checks whether a piece is stable
-	private boolean isStable(Coordinates coord) {
-		 if (isCorner(coord)) {
-			 if (areLinesFull(coord)) {
-				 return true;
-			 } else {
-				 return false;
-			 }
-		 } else {
-			 return false;
-		 }
-	}
 	
 	//checks whether a piece is in a corder
 	private boolean isCorner(Coordinates coord) {
@@ -185,14 +195,6 @@ public class GameBoard {
 		else return false;
 	}
 	
-	//checks whether it is an X-square
-	private boolean isXSquare(Coordinates coord) {
-		if((coord.X==1) && (coord.Y == 1)) return true;
-		if((coord.X==1) && (coord.Y == 6)) return true;
-		if((coord.X==6) && (coord.Y == 1)) return true;
-		if((coord.X==6) && (coord.Y == 6)) return true;
-		else return false;
-	}
 	
 	//checks whether lines in all directions are full
 	private boolean areLinesFull(Coordinates coord) {

@@ -24,9 +24,17 @@ public class MinMaxPlayer implements BasePlayer {
 	// ==========================================================
 	// Private Methods
 	// ==========================================================
+	
 	private int evaluate(GameBoard gb, int Player) {
-		return gb.countStones(Player);
+		//the quality of move has the basis of (number of stones + flippable stones) = total stones after move
+		int value = gb.countStones(Player);
+		//that basis is changed according to the type of move
+		Coordinates move = new Coordinates();
+		if(gb.isStable(move)) value += 4;  // stable stones are good
+		if(gb.isXSquare(move)) value -= 6; //must avoid X-squares
+		return value;
 	}
+
 	
 	private Move Max(GameBoard gb, int depth, int maxDepth) {
 		// check for timeOut
