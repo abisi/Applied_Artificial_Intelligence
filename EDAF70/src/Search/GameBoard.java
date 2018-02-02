@@ -122,15 +122,11 @@ public class GameBoard {
 	
 	//checks whether a piece is stable
 	public boolean isStable(Coordinates coord) {
-		 if (isCorner(coord)) {
-			 if (areLinesFull(coord)) {
+		 if (isCorner(coord) || areLinesFull(coord) ) {
 				 return true;
 			 } else {
 				 return false;
 			 }
-		 } else {
-			 return false;
-		 }
 	}
 	
 	//checks whether it is an X-square
