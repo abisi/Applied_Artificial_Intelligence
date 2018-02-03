@@ -134,7 +134,7 @@ public class MinMaxPlayer implements BasePlayer {
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Opponent,move);
-			Move nextMove = Max(copy, depth+1, maxDepth, alpha, beta);
+			Move nextMove = Max(copy, depth+1, maxDepth);
 		
 			/*alpha-beta pruning:
 			v = max(beta, nextMove.Value);
