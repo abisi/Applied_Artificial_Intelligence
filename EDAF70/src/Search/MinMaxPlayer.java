@@ -28,7 +28,7 @@ public class MinMaxPlayer implements BasePlayer {
 		return gb.countStones(Player);
 	}
 	
-	private Move Max(GameBoard gb, int depth, int maxDepth) {
+	private Move Max(GameBoard gb, int depth, int maxDepth, int alpha, int beta) {
 		// check for timeOut
 		if (isTimeOver()) {
 			System.out.println("Max: Time is over.");
@@ -39,12 +39,13 @@ public class MinMaxPlayer implements BasePlayer {
 		if (depth == maxDepth) {
 			return new Move(null, evaluate(gb,Color));
 		}
+		//int v = Integer.MIN_VALUE;
 		
 		// if no moves are available for max
 		if(!gb.isMoveAvailable(Color)) {
 			// if moves are available for min
 			if(gb.isMoveAvailable(Opponent)) {
-				Move nextMove = Min(gb, depth + 1, maxDepth);
+				Move nextMove = Min(gb, depth + 1, maxDepth, alpha, beta);
 				return new Move(null, nextMove.Value);
 			} else {
 				return new Move(null, evaluate(gb,Color));
@@ -61,8 +62,16 @@ public class MinMaxPlayer implements BasePlayer {
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Color,move);
-			Move nextMove = Min(copy,depth+1,maxDepth);
+			Move nextMove = Min(copy,depth+1,maxDepth, alpha, beta);
 		
+			/*alpha-beta pruning:
+			v = max(alpha, nextMove.Value);
+			if(v >= beta) return v;
+			alpha = max(alpha, v);
+			}
+			return v;
+			*/
+			
 			if (nextMove.Value > bestMove.Value) {
 				bestMove.Coord = move;
 				bestMove.Value = nextMove.Value;
@@ -72,7 +81,7 @@ public class MinMaxPlayer implements BasePlayer {
 		return bestMove;
 	}
 	
-	private Move Min(GameBoard gb, int depth, int maxDepth) {
+	private Move Min(GameBoard gb, int depth, int maxDepth, int alpha, int beta) {
 		// check for timeOut
 		if (isTimeOver()) {
 			System.out.println("Min: Time is over.");
@@ -83,12 +92,13 @@ public class MinMaxPlayer implements BasePlayer {
 		if (depth == maxDepth) {
 			return new Move(null, evaluate(gb,Color));
 		}
-				
+		//int v = Integer.MIN_VALUE;
+		
 		// if no moves are available for min
 		if(gb.availableMoves(Opponent).isEmpty()) {
 			// if moves are available for max
 			if(!gb.availableMoves(Color).isEmpty()) {
-				Move nextMove = Max(gb, depth + 1, maxDepth);
+				Move nextMove = Max(gb, depth + 1, maxDepth, alpha, beta);
 				return new Move(null, nextMove.Value);
 			} else {
 				return new Move(null, evaluate(gb,Color));
@@ -106,6 +116,14 @@ public class MinMaxPlayer implements BasePlayer {
 			copy.makeMove(Opponent,move);
 			Move nextMove = Max(copy, depth+1, maxDepth);
 		
+			/*alpha-beta pruning:
+			v = max(beta, nextMove.Value);
+			if(v >= alpha) return v;
+			beta = max(beta, v);
+			}
+			return v;
+			*/
+			
 			if (nextMove.Value < bestMove.Value) {
 				bestMove.Coord = move;
 				bestMove.Value = nextMove.Value;
