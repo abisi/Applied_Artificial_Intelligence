@@ -24,9 +24,18 @@ public class MinMaxPlayer implements BasePlayer {
 	// ==========================================================
 	// Private Methods
 	// ==========================================================
+	
 	private int evaluate(GameBoard gb, int Player) {
-		return gb.countStones(Player);
+		//the quality of move has as a basis: (number of stones + flippable stones) = total stones after move
+		int value = gb.countStones(Player);
+		//that basis is changed according to the type of move
+		Coordinates move = new Coordinates();
+		if(gb.isStable(move)) value += 4;  // stable stones are +
+		if(gb.isXSquare(move)) value -= 6; //must avoid X-squares; the disadvantage of an X-square surpasses the advantage 
+										  //of putting a stable stone, hence a greater absolute change
+		return value;
 	}
+
 	
 	private Move Max(GameBoard gb, int depth, int maxDepth, int alpha, int beta) {
 		// check for timeOut
@@ -57,13 +66,24 @@ public class MinMaxPlayer implements BasePlayer {
 		// determine possible moves
 		ArrayList<Coordinates> possibleMoves = gb.availableMoves(Color);
 		Move bestMove = new Move(null,Integer.MIN_VALUE);
+		//moves for the opponent in current state of the game
+		int oppMoves = gb.availableMoves(Opponent).size(); 
 		
 		// select the best move
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Color,move);
 			Move nextMove = Min(copy,depth+1,maxDepth, alpha, beta);
-		
+			
+			//for each move we see how many moves this will allow the opponent to have: the lesser the better
+			int oppNewMoves = gb.availableMoves(Opponent).size();
+			int diff = oppMoves - oppNewMoves;
+			if (oppNewMoves < oppMoves) {
+				nextMove.Value += diff;  //if less moves, we add the difference to the Value
+			} else {
+				nextMove.Value -= diff / 2;  //if not bigger, then the move might still be good (stable move, etc...), 
+											//so we opt to remove less than the difference to Value (to discuss)
+			}
 			/*alpha-beta pruning:
 			v = max(alpha, nextMove.Value);
 			if(v >= beta) return v;
@@ -114,7 +134,7 @@ public class MinMaxPlayer implements BasePlayer {
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Opponent,move);
-			Move nextMove = Max(copy, depth+1, maxDepth);
+			Move nextMove = Max(copy, depth+1, maxDepth, alpha, beta);
 		
 			/*alpha-beta pruning:
 			v = max(beta, nextMove.Value);
