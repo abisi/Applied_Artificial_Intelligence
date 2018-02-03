@@ -85,6 +85,7 @@ public class GameBoard {
 		}
 		return finalMoves;
 	}
+	
 
 	public boolean isMoveAvailable(int player) {
 		return availableMoves(player).isEmpty() ? false : true;
