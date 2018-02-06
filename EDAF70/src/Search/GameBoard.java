@@ -136,7 +136,7 @@ public class GameBoard {
 			if((coord.X==1) && (coord.Y == 6)) return true;
 			if((coord.X==6) && (coord.Y == 1)) return true;
 			if((coord.X==6) && (coord.Y == 6)) return true;
-			else return false;
+			return false;
 		}
 	
 	// ==========================================================
@@ -189,19 +189,19 @@ public class GameBoard {
 		if((coord.X==0) && (coord.Y == 7)) return true;
 		if((coord.X==7) && (coord.Y == 0)) return true;
 		if((coord.X==7) && (coord.Y == 7)) return true;
-		else return false;
+		return false;
 	}
 	
 	
 	//checks whether lines in all directions are full
 	private boolean areLinesFull(Coordinates coord) {
 		for(int i = 0; i < Board.length; ++i) {
-			if (Board[coord.X][i] == 0 && isOnBoard(coord)) return false;
-			if (Board[i][coord.Y] == 0 && isOnBoard(coord)) return false; 
-			if (Board[coord.X + i][coord.Y + i] == 0 && isOnBoard(coord))  return false;
-			if (Board[coord.X - i][coord.Y + i] == 0 && isOnBoard(coord)) return false;
-			if (Board[coord.X + i][coord.Y - i] == 0 && isOnBoard(coord)) return false;
-			if (Board[coord.X - i][coord.Y - i] == 0 && isOnBoard(coord)) return false; 
+			if (Board[coord.X][i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
+			if (Board[i][coord.Y] == GameBoard.EMPTY && isOnBoard(coord)) return false; 
+			if (Board[coord.X + i][coord.Y + i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
+			if (Board[coord.X - i][coord.Y + i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
+			if (Board[coord.X + i][coord.Y - i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
+			if (Board[coord.X - i][coord.Y - i] == GameBoard.EMPTY && isOnBoard(coord)) return false; 
 		}
 		return true;
 	}

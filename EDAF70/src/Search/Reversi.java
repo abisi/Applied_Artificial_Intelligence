@@ -15,7 +15,7 @@ public class Reversi {
     private BasePlayer Player2 = new MinMaxPlayer();
     
     // time Limit in milliseconds
-    private long TimeOut = 4000;
+    private long TimeOut = 2000;
     
     // ==========================================================
  	// Main Method
