@@ -15,21 +15,39 @@ public class UserInterface {
 	private JFrame frame;
 	private final JPanel GUIPanel = new JPanel(new BorderLayout(3, 3));
     private JPanel reversiBoardPanel;
+    private JScrollPane scrollLog;
 	private ReversiButton[][] ReversiBoard = new ReversiButton[8][8];
     private static final String COLS = "ABCDEFGH";
+    private JLabel Log;
     
     // ==========================================================
  	// Constructor
  	// ========================================================== 
     public UserInterface(BasePlayer Player1, BasePlayer Player2) {
-    		initializeGUIPanel(Player1, Player2);
-    		setupFrame();
+		initializeGUIPanel(Player1, Player2);
+		setupFrame();
 
     }
     
     // ==========================================================
    	// Public Methods
    	// ========================================================== 
+    public String position(Coordinates move) {
+    	String x = Integer.toString(move.X + 1);
+    	String pos = "[ " + x + " , ";
+    	int y = move.Y;
+    	if (y == 0) pos += "A";
+    	if (y == 1) pos += "B";
+    	if (y == 2) pos += "C";
+    	if (y == 3) pos += "D";
+    	if (y == 4) pos += "E";
+    	if (y == 5) pos += "F";
+    	if (y == 6) pos += "G";
+    	if (y == 7) pos += "H";
+    	
+    	return pos += " ]";
+    }
+    
     public final JComponent getReversiBoard() {
         return reversiBoardPanel;
     }
@@ -55,17 +73,16 @@ public class UserInterface {
 	}
     
     public int chooseColor() {
-    	
-    		Object[] options = {"WHITE", "BLACK"};
-    		return JOptionPane.showOptionDialog(
-				frame,
-				"Would you rather play the black or the white player?",
-				"Player 1: Choose your Color",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE,
-				null,     //do not use a custom Icon
-				options,  //the titles of buttons
-				options[1]); //default button title
+		Object[] options = {"WHITE", "BLACK"};
+		return JOptionPane.showOptionDialog(
+			frame,
+			"Would you rather play the black or the white player?",
+			"Player 1: Choose your Color",
+			JOptionPane.YES_NO_OPTION,
+			JOptionPane.QUESTION_MESSAGE,
+			null,     //do not use a custom Icon
+			options,  //the titles of buttons
+			options[1]); //default button title
     }
     
     public int chooseTimeLimit() {
@@ -78,7 +95,7 @@ public class UserInterface {
     	                    null,
     	                    possibilities,
     	                    possibilities[0]);
-    		return Integer.parseInt(n);
+    		return (n != null) ?  Integer.parseInt(n) : null;
     }
     
     public void endGame(int StonesPlayer1, int StonesPlayer2) {
@@ -93,6 +110,12 @@ public class UserInterface {
     	
     		// close the window
     		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+    }
+    
+    public void addLogLine(String line) {
+    	String newText = 
+    			"<html>" + Log.getText() + "<br>" + line;
+    	Log.setText(newText);
     }
     
     // ==========================================================
@@ -113,9 +136,12 @@ public class UserInterface {
 		GUIPanel.setBorder(new EmptyBorder(5,5,5,5));
 		GUIPanel.setBackground(Color.WHITE);
 		
-		// Make space for later user
-		JLabel log = new JLabel("?");
-        GUIPanel.add(log, BorderLayout.LINE_START);
+		// Generate the log
+		Log = new JLabel("This is the log of the game:        ");
+		Log.setVerticalAlignment(SwingConstants.BOTTOM);
+		Log.setHorizontalAlignment(SwingConstants.LEFT);
+		Log.setAutoscrolls(true);
+        GUIPanel.add(Log, BorderLayout.LINE_START);
         
         // Create the Panel for the ReversiBoard
         reversiBoardPanel = new JPanel(new GridLayout(0, 9));

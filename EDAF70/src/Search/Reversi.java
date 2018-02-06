@@ -15,7 +15,7 @@ public class Reversi {
     private BasePlayer Player2 = new MinMaxPlayer();
     
     // time Limit in milliseconds
-    private long TimeOut = 2000;
+    private long DefaultTimeOut = 2000;
     
     // ==========================================================
  	// Main Method
@@ -44,12 +44,24 @@ public class Reversi {
 	public void newGame() {
 		
 		// Ask the player 1 about the color
-		int col = (Player1 instanceof HumanPlayer) ? UI.chooseColor() : GameBoard.WHITE;
+		int col = 0;
+		if(Player1 instanceof HumanPlayer) {
+			try {
+				 col =  UI.chooseColor();
+			} catch (Exception e){
+				
+			}
+		}
+		
 		int PlayerColor1 = (col == 0) ? GameBoard.WHITE : GameBoard.BLACK;
 		int PlayerColor2 = (PlayerColor1 == GameBoard.WHITE) ? GameBoard.BLACK : GameBoard.WHITE;
 		
 		// Define the time limit
-		TimeOut = Long.valueOf(1000 * UI.chooseTimeLimit());
+		long TimeOut = DefaultTimeOut;
+		try {
+			TimeOut = Long.valueOf(1000 * UI.chooseTimeLimit());
+		} catch (Exception e) {
+		}
 		
 		// Give away colors
 		Player1.initialize(PlayerColor1, TimeOut);
@@ -87,7 +99,11 @@ public class Reversi {
 			ArrayList<Coordinates> possibleMoves1 = gb.availableMoves(PlayerColor1);
 			UI.showPossibleMoves(possibleMoves1);
 			Coordinates p1move = Player1.nextMove(gb,possibleMoves1);
-			if (p1move != null) gb.makeMove(PlayerColor1,p1move);
+			if (p1move != null){
+				gb.makeMove(PlayerColor1,p1move);
+				UI.addLogLine("Player 1 moved to " + UI.position(p1move) );
+			} else 
+				UI.addLogLine("Player 1 did not make a move");
 			UI.updateGameBoard(gb);
 			
 			// Player2
@@ -95,7 +111,12 @@ public class Reversi {
 			ArrayList<Coordinates> possibleMoves2 = gb.availableMoves(PlayerColor2);
 			UI.showPossibleMoves(possibleMoves2);
 			Coordinates p2move = Player2.nextMove(gb,possibleMoves2);
-			if (p2move != null) gb.makeMove(PlayerColor2,p2move);
+			if (p2move != null) {
+				gb.makeMove(PlayerColor2,p2move);
+				UI.addLogLine("Player 2 moved to " + UI.position(p2move) );
+			} else {
+				UI.addLogLine("Player 2 did not make a move");
+			}
 			UI.updateGameBoard(gb);
 			
 			// stop the game if both players cannot play anymore
