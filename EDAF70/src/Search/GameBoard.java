@@ -43,6 +43,10 @@ public class GameBoard {
 		return true;
 	}
 	
+	public boolean isGameOver() {
+		return isFull() || (!isMoveAvailable(WHITE) && !isMoveAvailable(BLACK)) ;
+	}
+	
 	//counts all the Player's stones on the board
 	public int countStones(int Player) {
 		int count = 0;
@@ -58,7 +62,7 @@ public class GameBoard {
 		int op = (player == BLACK) ? WHITE : BLACK;
 		
 		ArrayList<Coordinates> finalMoves = new ArrayList<Coordinates>(); 
-		ArrayList<Coordinates> opp = opponentStones(player);  //opponent stones
+		ArrayList<Coordinates> opp = stones(op);  //opponent stones
 		
 		for(Coordinates opponent : opp) {
 			
@@ -121,23 +125,33 @@ public class GameBoard {
 		}
 	}
 	
-	//checks whether a piece is stable
-	public boolean isStable(Coordinates coord) {
-		 if (isCorner(coord) || areLinesFull(coord) ) {
-				 return true;
-			 } else {
-				 return false;
-			 }
+	public int evaluate(int Player) {
+		//the quality of move has as a basis: (number of stones + flippable stones) = total stones after move
+		int value = countStones(Player);
+		
+		//that basis is changed according to the type of move
+		ArrayList<Coordinates> stones = stones(Player);
+		
+		for (Coordinates stone : stones) {
+			if(isStable(stone)) value += 4;  // stable stones are +
+			if(isXSquare(stone)) value -= 6; //must avoid X-squares; the disadvantage of an X-square surpasses the advantage 
+											  //of putting a stable stone, hence a greater absolute change	
+		}
+		return value;
 	}
 	
-	//checks whether it is an X-square
-		public boolean isXSquare(Coordinates coord) {
-			if((coord.X==1) && (coord.Y == 1)) return true;
-			if((coord.X==1) && (coord.Y == 6)) return true;
-			if((coord.X==6) && (coord.Y == 1)) return true;
-			if((coord.X==6) && (coord.Y == 6)) return true;
-			return false;
-		}
+	public int finalEvaluation(int player) {
+		int op = (player == WHITE) ? BLACK : WHITE;
+		int playerStones = countStones(player);
+		int opponentStones = countStones(op);
+		
+		if (playerStones > opponentStones)
+			return Integer.MAX_VALUE;
+		if (playerStones == opponentStones)
+			return 0;
+		else
+			return Integer.MIN_VALUE;
+	}
 	
 	// ==========================================================
 	// Private Methods
@@ -171,15 +185,14 @@ public class GameBoard {
 		return result;
 		}
 	
-	private ArrayList<Coordinates> opponentStones(int player){
-		int opponent = (player == WHITE) ? BLACK : WHITE; 
-		ArrayList<Coordinates> oppStones = new ArrayList<Coordinates>();
+	private ArrayList<Coordinates> stones(int player){
+		ArrayList<Coordinates> stones = new ArrayList<Coordinates>();
 		
 		for(int i = 0; i < Board.length; i++)
 			for(int j = 0; j < Board[i].length; j++)
-				if (Board[i][j] == opponent)
-					oppStones.add(new Coordinates(i,j));
-		return oppStones;	
+				if (Board[i][j] == player)
+					stones.add(new Coordinates(i,j));
+		return stones;	
 	}
 	
 	
@@ -196,13 +209,41 @@ public class GameBoard {
 	//checks whether lines in all directions are full
 	private boolean areLinesFull(Coordinates coord) {
 		for(int i = 0; i < Board.length; ++i) {
-			if (Board[coord.X][i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
-			if (Board[i][coord.Y] == GameBoard.EMPTY && isOnBoard(coord)) return false; 
-			if (Board[coord.X + i][coord.Y + i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
-			if (Board[coord.X - i][coord.Y + i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
-			if (Board[coord.X + i][coord.Y - i] == GameBoard.EMPTY && isOnBoard(coord)) return false;
-			if (Board[coord.X - i][coord.Y - i] == GameBoard.EMPTY && isOnBoard(coord)) return false; 
+			// check if horizontal line if full
+			if (isOnBoard(new Coordinates(coord.X,i))) 
+				if (Board[coord.X][i] == GameBoard.EMPTY)return false;
+			// check if vertical line is full
+			if (isOnBoard(new Coordinates(i,coord.Y)))
+				if(Board[i][coord.Y] == GameBoard.EMPTY) return false;
+			// check in all of the diagonal directions
+			if (isOnBoard(new Coordinates(coord.X + i, coord.Y + i)))
+				if (Board[coord.X + i][coord.Y + i] == GameBoard.EMPTY)return false;
+			if (isOnBoard(new Coordinates(coord.X-i,coord.Y+i)))
+				if (Board[coord.X - i][coord.Y + i] == GameBoard.EMPTY)return false;
+			if (isOnBoard(new Coordinates(coord.X + i,coord.Y - i)))
+				if (Board[coord.X + i][coord.Y - i] == GameBoard.EMPTY)return false;
+			if (isOnBoard(new Coordinates(coord.X - i, coord.Y - i)))
+				if (Board[coord.X - i][coord.Y - i] == GameBoard.EMPTY)return false; 
 		}
 		return true;
 	}
+	
+	//checks whether a piece is stable
+	private boolean isStable(Coordinates coord) {
+		 if (isCorner(coord) || areLinesFull(coord) ) {
+				 return true;
+			 } else {
+				 return false;
+			 }
+	}
+	
+	//checks whether it is an X-square
+	private boolean isXSquare(Coordinates coord) {
+		if((coord.X==1) && (coord.Y == 1)) return true;
+		if((coord.X==1) && (coord.Y == 6)) return true;
+		if((coord.X==6) && (coord.Y == 1)) return true;
+		if((coord.X==6) && (coord.Y == 6)) return true;
+		return false;
+	}
+	
 }

@@ -11,7 +11,6 @@ public class MinMaxPlayer implements BasePlayer {
 	private int Color = 0;
 	private int Opponent = 0;
 	private long TimeOut = 0;
-	private int MaxDepth = 5;
 	private long StartTime = 0;
 	
 	// ==========================================================
@@ -25,129 +24,80 @@ public class MinMaxPlayer implements BasePlayer {
 	// Private Methods
 	// ==========================================================
 	
-	private int evaluate(GameBoard gb, int Player) {
-		//the quality of move has as a basis: (number of stones + flippable stones) = total stones after move
-		int value = gb.countStones(Player);
-		//that basis is changed according to the type of move
-		Coordinates move = new Coordinates();
-		
-		if(gb.isStable(move)) value += 4;  // stable stones are +
-		if(gb.isXSquare(move)) value -= 6; //must avoid X-squares; the disadvantage of an X-square surpasses the advantage 
-										  //of putting a stable stone, hence a greater absolute change
-		
-		return value;
-	}
-
-	
-	private Move Max(GameBoard gb, int depth, int maxDepth, int alpha, int beta) {
+	private int Max(GameBoard gb, int depth, int maxDepth, int a, int b)
+		throws OutOfTimeException {
 		// check for timeOut
-		if (isTimeOver()) {
-			System.out.println("Max: Time is over.");
-			return new Move(null, evaluate(gb,Color), gb.availableMoves(Opponent).size());
-		}
+		if (isTimeOver())
+			throw new OutOfTimeException();
+		// check if game is over
+		if (gb.isGameOver())
+			return gb.finalEvaluation(Color);
 		
 		// check if max depth is reached
-		if (depth == maxDepth) {
-			return new Move(null, evaluate(gb,Color), gb.availableMoves(Opponent).size());
-		}
-		
-		// v_alpha: the best value to max found so far
-		int v = Integer.MIN_VALUE;
-		
-		// if no moves are available for max
-		if(!gb.isMoveAvailable(Color)) {
-			// if moves are available for min
-			if(gb.isMoveAvailable(Opponent)) {
-				Move nextMove = Min(gb, depth + 1, maxDepth, alpha, beta);
-				return new Move(null, nextMove.Value, gb.availableMoves(Opponent).size());
-			} else {
-				return new Move(null, evaluate(gb,Color), gb.availableMoves(Opponent).size());
-			}
-		}
+		if (depth >= maxDepth)
+			return gb.evaluate(Color);
 		
 		// determine possible moves
 		ArrayList<Coordinates> possibleMoves = gb.availableMoves(Color);
-		Move bestMove = new Move(null,Integer.MIN_VALUE, Integer.MIN_VALUE);
-				
+
+		// check if the player has possible moves
+		if (possibleMoves.isEmpty())
+			return Min(gb,depth +1, maxDepth,a,b);
+		
+		// initialize alpha
+		int alpha = a;
+		
 		// select the best move
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Color,move);
 			
-			/* alpha-beta pruning:
-			v = Integer.max(alpha, nextMove.Value);
-			if(v >= beta) return v;
-			alpha = max(alpha, v);
-			}
-			return v;
-			*/
-			
-			Move nextMove = Min(copy,depth+1,maxDepth, alpha, beta);
-			
-			if (nextMove.Value > bestMove.Value) {
-				bestMove.Coord = move;
-				bestMove.Value = nextMove.Value;
-			}
+			alpha = Integer.max(alpha, Min(copy,depth + 1, maxDepth, a, b));
 		}
 		
-		return bestMove;
+		return alpha;
 	}
 	
-	private Move Min(GameBoard gb, int depth, int maxDepth, int alpha, int beta) {
+	private int Min(GameBoard gb, int depth, int maxDepth, int a, int b) 
+		throws OutOfTimeException {
 		// check for timeOut
-		if (isTimeOver()) {
-			System.out.println("Min: Time is over.");
-			return new Move(null, evaluate(gb,Color),gb.availableMoves(Opponent).size());
-		}
+		if (isTimeOver())
+			throw new OutOfTimeException();
+		// check if game is over
+		if (gb.isGameOver())
+			return gb.finalEvaluation(Color);
 		
 		// check if max depth is reached
-		if (depth == maxDepth) {
-			return new Move(null, evaluate(gb,Color),gb.availableMoves(Opponent).size());
-		}
-		
-		//int v = Integer.MAX_VALUE;
-		
-		// if no moves are available for min
-		if(gb.availableMoves(Opponent).isEmpty()) {
-			// if moves are available for max
-			if(!gb.availableMoves(Color).isEmpty()) {
-				Move nextMove = Max(gb, depth + 1, maxDepth, alpha, beta);
-				return new Move(null, nextMove.Value,gb.availableMoves(Opponent).size());
-			} else {
-				return new Move(null, evaluate(gb,Color),gb.availableMoves(Opponent).size());
-			}
-		}
-		
+		if (depth >= maxDepth)
+			return gb.evaluate(Color);
 		
 		// determine possible moves
 		ArrayList<Coordinates> possibleMoves = gb.availableMoves(Opponent);
-		Move bestMove = new Move(null,Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+		// check if the player has possible moves
+		if (possibleMoves.isEmpty())
+			return Min(gb,depth +1, maxDepth,a,b);
+		
+		// initialize beta
+		int beta = b;
 		
 		// select the best move
 		for (Coordinates move : possibleMoves) {
 			GameBoard copy = gb.clone();
 			copy.makeMove(Opponent,move);
-			Move nextMove = Max(copy, depth+1, maxDepth, alpha, beta);
-		
-			/*alpha-beta pruning:
-			v = max(beta, nextMove.Value);
-			if(v >= alpha) return v;
-			beta = max(beta, v);
-			}
-			return v;
-			*/
 			
-			if (nextMove.Value < bestMove.Value) {
-				bestMove.Coord = move;
-				bestMove.Value = nextMove.Value;
-			}
-			
+			beta = Integer.min(beta, Max(copy,depth + 1, maxDepth, a, b));
 		}
-		return bestMove;
+		
+		return beta;
 	}
 	
 	private boolean isTimeOver() {
 		return ((System.currentTimeMillis() - StartTime) < TimeOut) ? false : true;
+	}
+	
+	private class OutOfTimeException extends Exception {
+		private static final long serialVersionUID = -4005731770362803760L;
 	}
 	
 	// ==========================================================
@@ -170,21 +120,39 @@ public class MinMaxPlayer implements BasePlayer {
 	@Override
 	public Coordinates nextMove(GameBoard gb, ArrayList<Coordinates> possibleMoves) {
 		StartTime = System.currentTimeMillis();
-		Move nextMove = Max(gb,0,MaxDepth, 0, 0);
 		
-		// Wait till the timeOut time has passed
+		// if no moves are available, return null
+		if(possibleMoves.isEmpty())
+			return null;
 		
-		long millisToWait = TimeOut - (System.currentTimeMillis() - StartTime);
-		if (millisToWait > 0) {
-			try {
-				Thread.sleep(millisToWait);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		// if only one move is possible, return it
+		if(possibleMoves.size()==1)
+			return possibleMoves.get(0);
+		
+		// find the best move by going as deep with the recursion depth as possible in the given time
+		Coordinates bestMove = null;
+		try {
+			for (int maxDepth = 1 ;; maxDepth++) {
+				Coordinates tempBestMove = null;
+				int bestValue = Integer.MIN_VALUE;
+				
+				for (Coordinates move : possibleMoves) {
+					GameBoard clone = gb.clone();
+					clone.makeMove(Color, move);
+					int value = Min(clone,0,maxDepth,Integer.MAX_VALUE,Integer.MIN_VALUE);
+					if(value >= bestValue) {
+						bestValue = value;
+						tempBestMove = move;
+					}
+				}
+				
+				bestMove = tempBestMove;
 			}
+		} catch(OutOfTimeException e){
+			
 		}
 		
-		System.out.println("return nextMove");
-		return nextMove.Coord;
+		return bestMove;
 	}
 
 	@Override

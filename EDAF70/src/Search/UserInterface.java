@@ -99,19 +99,19 @@ public class UserInterface {
   	// Private Methods
   	// ========================================================== 
     private void setupFrame() {
-		frame = new JFrame("Reversi by se4054pf-s and ax5006bi-s");
+        frame = new JFrame("Reversi by se4054pf-s and ax5006bi-s");
         frame.add(GUIPanel);
         frame.setLocationByPlatform(true);
         frame.pack();
         frame.setMinimumSize(frame.getSize());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
+        frame.setVisible(true);    }
 	
     private final void initializeGUIPanel(BasePlayer Player1, BasePlayer Player2) {
 		
 		// Customize the content panel
 		GUIPanel.setBorder(new EmptyBorder(5,5,5,5));
+		GUIPanel.setBackground(Color.WHITE);
 		
 		// Make space for later user
 		JLabel log = new JLabel("?");
@@ -119,6 +119,7 @@ public class UserInterface {
         
         // Create the Panel for the ReversiBoard
         reversiBoardPanel = new JPanel(new GridLayout(0, 9));
+        reversiBoardPanel.setBackground(Color.WHITE);
         reversiBoardPanel.setBorder(new LineBorder(Color.BLACK));
         GUIPanel.add(reversiBoardPanel);
         
