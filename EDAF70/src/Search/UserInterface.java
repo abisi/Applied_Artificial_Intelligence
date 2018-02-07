@@ -15,7 +15,6 @@ public class UserInterface {
 	private JFrame frame;
 	private final JPanel GUIPanel = new JPanel(new BorderLayout(3, 3));
     private JPanel reversiBoardPanel;
-    private JScrollPane scrollLog;
 	private ReversiButton[][] ReversiBoard = new ReversiButton[8][8];
     private static final String COLS = "ABCDEFGH";
     private JLabel Log;
@@ -33,18 +32,8 @@ public class UserInterface {
    	// Public Methods
    	// ========================================================== 
     public String position(Coordinates move) {
-    	String x = Integer.toString(move.X + 1);
-    	String pos = "[ " + x + " , ";
-    	int y = move.Y;
-    	if (y == 0) pos += "A";
-    	if (y == 1) pos += "B";
-    	if (y == 2) pos += "C";
-    	if (y == 3) pos += "D";
-    	if (y == 4) pos += "E";
-    	if (y == 5) pos += "F";
-    	if (y == 6) pos += "G";
-    	if (y == 7) pos += "H";
-    	
+    	String pos = "[ " + Integer.toString(move.X + 1) + " , ";
+    	pos += Character.toString(COLS.charAt(move.Y));
     	return pos += " ]";
     }
     
