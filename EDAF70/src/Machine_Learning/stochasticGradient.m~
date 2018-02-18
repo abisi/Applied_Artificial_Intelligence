@@ -1,0 +1,34 @@
+function [w, iter, loss] = stochasticGradient(A, w0, tol, maxiter)
+%Gradient descent algorithm (univariate linear regression) - stochastic updates
+%      output: w, the solution (weights w0, w1)
+%              iter, # of iterations needed
+%
+%      input: A, matrix containing the training sets of 15 points in x,y
+%                plane
+%             w0, inital guess for the weights vector, w(1) = w_0, w(2) =
+%             w_1
+%             tol, tolerance threshold
+%             maxiter, maximal number of iterations allowed
+%
+
+SSE = @(w) sum((A(:,2) - (w(1) + w(2).*A(:,1))).^2); %sum of squared errors as defined in the slides (TO CHANGE)
+%dSSE = @(w) gradient(SSE); %the gradient
+dSSE_w0 = @(w) -2*sum(A(:,2) - (w(1)+w(1).*A(:,1)));
+dSSE_w1 = @(w) -2*sum(A(:,2).*(A(:,2) - (w(1)+w(1).*A(:,1))));
+
+alpha = 0.01; %to be changed if divergence, may have to be updated also
+iter = 1;
+w = w0;
+eval = [];
+eval(iter) = SSE(w);
+while (iter < maxiter && eval(end) > tol)
+    iter = iter + 1;
+    
+    %stochastic gradient ('online learning', updates carried out one example at a time)
+    w(1) = w(1) + alpha.*(A(:,1) - (w(1) + w(2).*A(:,2)));
+    w(2) = w(2) + alpha.*A(:,2).*(A(:,1) - (w(1) + w(2).*A(:,2)));
+    eval(iter) = SSE(w);
+
+end
+
+

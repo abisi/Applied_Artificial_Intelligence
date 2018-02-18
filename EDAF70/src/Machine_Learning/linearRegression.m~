@@ -1,0 +1,48 @@
+%Linear regression
+
+%Data sets from Salammbo FR and EN, # of ocurrences of 'a'
+salFr = load('salammbo_a_fr.txt');
+salEn = load('salammbo_a_en.txt');
+
+salFrx = salFr(:,1); %# of letters in chapter
+salFry = salFr(:,2); %# of 'a' 
+salEnx = salEn(:,1); 
+salEny = salEn(:,2); 
+
+
+%Scaling to 0-1
+maxFr = max(salFrx);
+minFr = min(salFrx);
+maxEn = max(salEnx);
+minEn = min(salEnx);
+
+salFrxScaled = (salFrx - minFr) / (maxFr - minFr);
+salEnxScaled = (salEnx - minEn) / (maxEn - minEn);
+
+%Plot (data)
+figure;
+plot(salFrxScaled, salFry,'.');
+xlabel('Number of letters in chapter');
+ylabel('Occurences of the letter a');
+hold on;
+plot(salEnxScaled, salEny,'.');
+legend('French text','English text');
+
+%Gradient descent algorithm (batch or/and stochastic updates)
+%Parameters
+alpha = 0.001;  %To be changed/updated if no divergence
+maxiter = 1000;
+w0 = [0, 0];
+tol = 1e-3;
+
+%Batch
+[wFrBatch,lossFrBatch] = batchGradient(salFrxScaled, salFry, w0, alpha, tol, maxiter);
+[wEnBatch,lossEnBatch] = batchGradient(salEnxScaled, salEny, w0, alpha, tol, maxiter);
+%Stochastic
+[wFrSto,lossFrSto] = stochasticGradient(salFrxScaled, salFry, w0, alpha, tol, maxiter);
+[wEnSto,lossEnSto] = stochasticGradient(salEnxScaled, salEny, w0, alpha, tol, maxiter);
+
+
+%Plot(linear regression y_est = )
+plot()
+
