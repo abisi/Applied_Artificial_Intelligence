@@ -12,17 +12,20 @@ function [w, iter] = batchGradient(dataX, dataY, w0, alpha, tol, maxiter)
 %
 
 loss = @(w) sum((dataY - (w(1) + w(2).*dataX)).^2);   %Sum of squared errors as defined in the slides (TO CHANGE)
-dLoss_w0 = @(w) -2 * sum(dataY - (w(1) + w(1).*dataX));
-dLoss_w1 = @(w) -2 * sum((dataY - (w(1) + w(1).* dataX)).*dataX) ; 
+%dLoss_w0 = @(w) -2 * sum(dataY - (w(1) + w(1).*dataX));
+%dLoss_w1 = @(w) -2 * sum((dataY - (w(1) + w(1).* dataX)).*dataX) ; 
 
-q=size(dataX); %Data set of q examples(15)
+X(:,1) = ones(15,1);
+X(:,2) = dataX;
+q=length(dataX); %Data set of q examples(15)
 iter = 1;
 w = w0;
 eval = [];
 while (loss(w) > tol && iter < maxiter)
-    w(1) = w(1) - 2*(alpha./q)*dLoss_w0(w);
-    w(2) = w(2) - 2*(alpha./q)*dLoss_w1(w);
-    loss
+    w = w + (alpha/q)*X'*(dataY - X*w);
+    %w(1) = w(1) - 2*(alpha./15)*dLoss_w0(w);
+    %w(2) = w(2) - 2*(alpha./15)*dLoss_w1(w);
+    eval = [eval loss(w)];
     iter = iter + 1;
 end
 

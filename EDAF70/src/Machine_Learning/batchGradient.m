@@ -17,15 +17,15 @@ loss = @(w) sum((dataY - (w(1) + w(2).*dataX)).^2);   %Sum of squared errors as 
 
 X(:,1) = ones(15,1);
 X(:,2) = dataX;
-q=size(dataX); %Data set of q examples(15)
+q=length(dataX); %Data set of q examples(15)
 iter = 1;
 w = w0;
 eval = [];
 while (loss(w) > tol && iter < maxiter)
-    w = w + (alpha./15)*X'*(dataY - X*w);
+    w = w + (alpha/q)*X'*(dataY - X*w);
     %w(1) = w(1) - 2*(alpha./15)*dLoss_w0(w);
     %w(2) = w(2) - 2*(alpha./15)*dLoss_w1(w);
-    loss(w);
+    eval = [eval loss(w)];
     iter = iter + 1;
 end
 

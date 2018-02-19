@@ -26,8 +26,8 @@ while (iter < maxiter && eval(end) > tol)
      %w(1) = w(1) + alpha.*(dataX(i) - (w(1) + w(2).*dataY(i)));
      %w(2) = w(2) + alpha.*dataY(i).*(dataX(i) - (w(1) + w(2).*dataY(i)));
      end
-eval(iter) = loss(w);
-iter = iter + 1;
+     eval = [eval loss(w)];
+     iter = iter + 1;
 end
     
 end
