@@ -54,3 +54,33 @@ plot(range, wEnBatch(1) + wEnBatch(2)*range);
 plot(range, wFrSto(1) + wFrSto(2)*range);
 plot(range, wEnSto(1) + wEnSto(2)*range);
 legend('French text','English text','Fr: batch', 'En: batch','Fr : stochastic', 'En: stochastic');
+
+save parameters.mat salFrXScaled salFrYScaled salEnXScaled salEnYScaled w0 learningRate tol maxiter
+
+%% Learning Rate vs iterations
+
+% load paramters
+load parameters.mat
+
+maxiter = 20000;
+
+figure;
+hold on
+
+for learningRate = 10.^linspace(-6,0,12)
+    
+    % Batch
+    [wFrBatch,iterFrBatch] = batchGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
+    [wEnBatch,iterEnBatch] = batchGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
+
+    %Stochastic
+    [wFrSto,iterFrSto] = stochasticGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
+    [wEnSto,iterEnSto] = stochasticGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
+    
+    % plot results
+    plot(log(learningRate),iterFrBatch,'+')
+    plot(log(learningRate),iterEnBatch,'+')
+    plot(log(learningRate),iterFrSto,'ro')
+    plot(log(learningRate),iterEnSto,'ro')
+    
+end
