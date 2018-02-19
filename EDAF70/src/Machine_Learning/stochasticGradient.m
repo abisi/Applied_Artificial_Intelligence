@@ -14,20 +14,27 @@ function [w, iter] = stochasticGradient(dataX, dataY, w0, alpha, tol, maxiter)
 
 %Sum of squared errors as defined in the slides
 loss = @(w) sum((dataY - (w(1) + w(2).*dataX)).^2); 
-X(:,1) = ones(15,1);
-X(:,2) = dataX;
+dLoss_w0 = @(w) -2 * sum(dataY - (w(1) + w(2).*dataX));
+dLoss_w1 = @(w) -2 * sum((dataY - (w(1) + w(2).* dataX)).*dataX) ; 
+
+% Define parameters
+q = length(dataX); %Data set of q examples(15)
+X = repmat([ones(15,1) dataX], floor(maxiter/q)+q, 1);
+Y = repmat(dataY,floor(maxiter/q)+q, 1);
+
 iter = 1;
 w = w0;
-eval = [];
-eval(iter) = loss(w);
-while (iter < maxiter && eval(end) > tol)
-     for i = 1:size(dataX(:,1))
-     w = w + alpha * (dataY(i) - X(i)*w)*X(i);    
-     %w(1) = w(1) + alpha.*(dataX(i) - (w(1) + w(2).*dataY(i)));
-     %w(2) = w(2) + alpha.*dataY(i).*(dataX(i) - (w(1) + w(2).*dataY(i)));
-     end
-     eval = [eval loss(w)];
-     iter = iter + 1;
+
+gradientLoss = [dLoss_w0(w); dLoss_w1(w)];
+
+
+while (iter < maxiter && norm(gradientLoss) > tol)
+    
+    delta = Y(iter) - X(iter,:)*w;
+    w = w + alpha * delta * X(iter,:)';
+    
+    gradientLoss = [dLoss_w0(w); dLoss_w1(w)];
+    iter = iter + 1;
 end
     
 end

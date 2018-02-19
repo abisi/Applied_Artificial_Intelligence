@@ -32,7 +32,7 @@ plot(salEnXScaled, salEnYScaled,'.');
 %Gradient descent algorithm (batch or/and stochastic updates)
 %Parameters
 learningRate = 0.01;  %To be changed/updated if no divergence / try different values of alpha
-maxiter = 10000;
+maxiter = 1000000;
 w0 = [0; 0];
 tol = 0.001;
 

@@ -1,5 +1,6 @@
-function [w, iter, loss] = stochasticGradient(A, w0, tol, maxiter)
-%Gradient descent algorithm (univariate linear regression) - stochastic updates
+function [w, iter] = stochasticGradient(dataX, dataY, w0, alpha, tol, maxiter)
+%Gradient descent algorithm (univariate linear regression) - stochastic
+% updates ('online learning', updates carried out one example at a time)
 %      output: w, the solution (weights w0, w1)
 %              iter, # of iterations needed
 %
@@ -11,24 +12,28 @@ function [w, iter, loss] = stochasticGradient(A, w0, tol, maxiter)
 %             maxiter, maximal number of iterations allowed
 %
 
-SSE = @(w) sum((A(:,2) - (w(1) + w(2).*A(:,1))).^2); %sum of squared errors as defined in the slides (TO CHANGE)
-%dSSE = @(w) gradient(SSE); %the gradient
-dSSE_w0 = @(w) -2*sum(A(:,2) - (w(1)+w(1).*A(:,1)));
-dSSE_w1 = @(w) -2*sum(A(:,2).*(A(:,2) - (w(1)+w(1).*A(:,1))));
+%Sum of squared errors as defined in the slides
+loss = @(w) sum((dataY - (w(1) + w(2).*dataX)).^2); 
+dLoss_w0 = @(w) -2 * sum(dataY - (w(1) + w(2).*dataX));
+dLoss_w1 = @(w) -2 * sum((dataY - (w(1) + w(2).* dataX)).*dataX) ; 
 
-alpha = 0.01; %to be changed if divergence, may have to be updated also
+% Define parameters
+X = repmat([ones(15,1) dataX],[]);
+q = length(dataX); %Data set of q examples(15)
+
 iter = 1;
 w = w0;
-eval = [];
-eval(iter) = SSE(w);
-while (iter < maxiter && eval(end) > tol)
-    iter = iter + 1;
+
+gradientLoss = [dLoss_w0(w); dLoss_w1(w)];
+
+
+while (iter < q && norm(gradientLoss) > tol)
     
-    %stochastic gradient ('online learning', updates carried out one example at a time)
-    w(1) = w(1) + alpha.*(A(:,1) - (w(1) + w(2).*A(:,2)));
-    w(2) = w(2) + alpha.*A(:,2).*(A(:,1) - (w(1) + w(2).*A(:,2)));
-    eval(iter) = SSE(w);
-
+    delta = dataY(iter) - w'*X(iter,:)';
+    w = w + alpha * delta * X(iter,:)';
+    
+    gradientLoss = [dLoss_w0(w); dLoss_w1(w)];
+    iter = iter + 1;
 end
-
-
+    
+end
