@@ -78,9 +78,9 @@ for learningRate = 10.^linspace(-6,0,12)
     [wEnSto,iterEnSto] = stochasticGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
     
     % plot results
-    plot(log(learningRate),iterFrBatch,'')
-    plot(log(learningRate),iterEnBatch,'bo')
-    plot(log(learningRate),iterFrSto,'go')
-    plot(log(learningRate),iterEnSto,'o')
+    plot(log(learningRate),iterFrBatch,'+')
+    plot(log(learningRate),iterEnBatch,'+')
+    plot(log(learningRate),iterFrSto,'ro')
+    plot(log(learningRate),iterEnSto,'ro')
     
 end
