@@ -37,12 +37,12 @@ w0 = [0; 0];
 tol = 0.001;
 
 %Batch
-[wFrBatch,iterFrBatch] = batchGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
-[wEnBatch,iterEnBatch] = batchGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
+[wFrBatch,iterFrBatch,timeFrBatch] = batchGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
+[wEnBatch,iterEnBatch,timeEnBatch] = batchGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
 
 %Stochastic
-[wFrSto,iterFrSto] = stochasticGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
-[wEnSto,iterEnSto] = stochasticGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
+[wFrSto,iterFrSto,timeFrSto] = stochasticGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
+[wEnSto,iterEnSto,timeEnSto] = stochasticGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
 
 
 %Plot(linear regression y = w0 + w1*x)

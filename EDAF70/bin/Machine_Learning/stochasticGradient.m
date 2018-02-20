@@ -1,4 +1,4 @@
-function [w, iter] = stochasticGradient(dataX, dataY, w0, alpha, tol, maxiter)
+function [w, iter, time] = stochasticGradient(dataX, dataY, w0, alpha, tol, maxiter)
 %Gradient descent algorithm (univariate linear regression) - stochastic
 % updates ('online learning', updates carried out one example at a time)
 %      output: w, the solution (weights w0, w1)
@@ -12,6 +12,10 @@ function [w, iter] = stochasticGradient(dataX, dataY, w0, alpha, tol, maxiter)
 %             maxiter, maximal number of iterations allowed
 %
 
+% initialize timing
+tic;
+tstart = tic;
+
 %Sum of squared errors as defined in the slides
 loss = @(w) sum((dataY - (w(1) + w(2).*dataX)).^2); 
 dLoss_w0 = @(w) -2 * sum(dataY - (w(1) + w(2).*dataX));
@@ -19,22 +23,35 @@ dLoss_w1 = @(w) -2 * sum((dataY - (w(1) + w(2).* dataX)).*dataX) ;
 
 % Define parameters
 q = length(dataX); %Data set of q examples(15)
-X = repmat([ones(15,1) dataX], floor(maxiter/q)+q, 1);
-Y = repmat(dataY,floor(maxiter/q)+q, 1);
+X = [ones(q,1) dataX];
 
-iter = 1;
+% Initialize running data
+iter = 0;
 w = w0;
-
 gradientLoss = [dLoss_w0(w); dLoss_w1(w)];
-
 
 while (iter < maxiter && norm(gradientLoss) > tol)
     
-    delta = Y(iter) - X(iter,:)*w;
-    w = w + alpha * delta * X(iter,:)';
+    % shuffle samples
+    perm = randperm(q);
+    Xperm = X(perm',:);
+    Yperm = dataY(perm',:);
     
+    % go throgh the shuffled samples
+    for i = 1:q
+        delta = Yperm(i) - Xperm(i,:)*w;
+        w = w + alpha * delta * Xperm(i,:)';
+    end
+    
+    % evaluate the gradient loss
     gradientLoss = [dLoss_w0(w); dLoss_w1(w)];
+    
+    % increment the iteration
     iter = iter + 1;
+    
 end
+
+% time elapsed
+time = toc(tstart);
     
 end

@@ -1,4 +1,4 @@
-function [w, iter] = batchGradient(dataX, dataY, w0, alpha, tol, maxiter)
+function [w, iter, time] = batchGradient(dataX, dataY, w0, alpha, tol, maxiter)
 %Gradient descent algorithm (univariate linear regression) - batch updates
 %      output: w, the solution (weights w0, w1)
 %              iter, # of iterations needed
@@ -11,6 +11,11 @@ function [w, iter] = batchGradient(dataX, dataY, w0, alpha, tol, maxiter)
 %             maxiter, maximal number of iterations allowed
 %
 
+% initialize timing
+tic;
+tstart = tic;
+
+% compute loss
 loss = @(w) sum((dataY - (w(1) + w(2).*dataX)).^2);   %Sum of squared errors as defined in the slides (TO CHANGE)
 dLoss_w0 = @(w) -2 * sum(dataY - (w(1) + w(2).*dataX));
 dLoss_w1 = @(w) -2 * sum((dataY - (w(1) + w(2).* dataX)).*dataX) ; 
@@ -31,6 +36,8 @@ while (norm(gradientLoss) > tol && iter < maxiter)
     gradientLoss = [dLoss_w0(w); dLoss_w1(w)];
     iter = iter + 1;
 end
+
+time = toc(tstart);
 
 end
 
