@@ -23,11 +23,12 @@ salEnYScaled = salEny ./ maxYEn;
 
 %Plot (data)
 figure;
-plot(salFrXScaled, salFrYScaled,'.');
+hold on;
+plot(salFrXScaled, salFrYScaled,'b+'); %French in blue
 xlabel('Number of letters in chapter');
 ylabel('Occurences of the letter a');
-hold on;
-plot(salEnXScaled, salEnYScaled,'.');
+title('Letter frequencies in \itSalaambô', 'Interpreter','tex')
+plot(salEnXScaled, salEnYScaled,'g+'); %English in green
 
 %Gradient descent algorithm (batch or/and stochastic updates)
 %Parameters
@@ -53,34 +54,67 @@ plot(range, wEnBatch(1) + wEnBatch(2)*range);
 %Stochastic
 plot(range, wFrSto(1) + wFrSto(2)*range);
 plot(range, wEnSto(1) + wEnSto(2)*range);
-legend('French text','English text','Fr: batch', 'En: batch','Fr : stochastic', 'En: stochastic');
+legend('French text','English text','Fr: batch, y = 0.002 + 0.986x ', 'En: batch y = -0.0004 + 0.994x','Fr : stochastic y = 0.009 + 0.983x', 'En: stochastic y = -0.0007 + 0.995x');
+%Zoom in
+axes('position',[.65 .175 .25 .25]);
+box on % put box around new pair of axes
+index = (range > 0.485) & (range < 0.515);
+hold on;
+%plot(range(index), salFrYScaled(5:10),'b+');
+%plot(range(index), salEnYScaled(5:10),'g+');
+plot(range(index), wFrBatch(1) + wFrBatch(2)*range(index));
+plot(range(index), wEnBatch(1) + wEnBatch(2)*range(index));
+plot(range(index), wFrSto(1) + wFrSto(2)*range(index));
+plot(range(index), wEnSto(1) + wEnSto(2)*range(index));
+axis tight;
 
 save parameters.mat salFrXScaled salFrYScaled salEnXScaled salEnYScaled w0 learningRate tol maxiter
 
-%% Learning Rate vs iterations
+%% Learning rate vs iterations
 
-% load paramters
+% Load parameters
 load parameters.mat
-
 maxiter = 20000;
+learningRate = 10.^linspace(-6,0,12)
+iterFrB = [];
+iterEnB = [];
+iterFrS = [];
+iterEnS = [];
 
-figure;
-hold on
-
-for learningRate = 10.^linspace(-6,0,12)
+for i = 1:length(learningRate)
     
     % Batch
-    [wFrBatch,iterFrBatch] = batchGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
-    [wEnBatch,iterEnBatch] = batchGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
-
+    [wFrBatch,iterFrBatch] = batchGradient(salFrXScaled, salFrYScaled, w0, learningRate(i), tol, maxiter);
+    iterFrB = [iterFrB iterFrBatch];
+    [wEnBatch,iterEnBatch] = batchGradient(salEnXScaled, salEnYScaled, w0, learningRate(i), tol, maxiter);
+    iterEnB = [iterEnB iterEnBatch];
     %Stochastic
-    [wFrSto,iterFrSto] = stochasticGradient(salFrXScaled, salFrYScaled, w0, learningRate, tol, maxiter);
-    [wEnSto,iterEnSto] = stochasticGradient(salEnXScaled, salEnYScaled, w0, learningRate, tol, maxiter);
-    
-    % plot results
-    plot(log(learningRate),iterFrBatch,'+')
-    plot(log(learningRate),iterEnBatch,'+')
-    plot(log(learningRate),iterFrSto,'ro')
-    plot(log(learningRate),iterEnSto,'ro')
+    [wFrSto,iterFrSto] = stochasticGradient(salFrXScaled, salFrYScaled, w0, learningRate(i), tol, maxiter);
+    iterFrS = [iterFrS iterFrSto];
+    [wEnSto,iterEnSto] = stochasticGradient(salEnXScaled, salEnYScaled, w0, learningRate(i), tol, maxiter);
+    iterEnS = [iterEnS iterEnSto];
+
     
 end
+
+    %Plot results
+    figure;
+    subplot(2,1,1); 
+    hold on;
+    plot(log(learningRate),iterFrB,'b+');
+    plot(log(learningRate),iterEnB,'g+');
+    xlabel('Learning rate \alpha');
+    ylabel('Number of iterations');
+    title('Batch gradient descent');
+    legend('French','English');
+    
+    subplot(2,1,2); 
+    hold on;
+    plot(log(learningRate),iterFrS,'b+');
+    plot(log(learningRate),iterEnS,'g+');
+    xlabel('Learning rate \alpha');
+    ylabel('Number of iterations');
+    title('Stochastic gradient descent');
+    legend('French','English');
+    
+    
