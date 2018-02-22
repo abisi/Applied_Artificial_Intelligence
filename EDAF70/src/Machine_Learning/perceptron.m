@@ -18,17 +18,18 @@ function [w,iter,time] = perceptron(X,alpha,matchingRate,maxiter)
         M(:,i) = X(:,2*i+1)./max(X(:,2*i+1));
     end
     
-    % running parameters
+    % Running parameters
     matches = 0;    
     iter = 0;
     w = zeros(3,1);
     
-    while (matches <= matchingRate * q && iter < maxiter)
+    %We permute and update until we reach a defined matching rate (matchingRate*q)
+    while (matches <= matchingRate*q && iter < maxiter) 
        
-        % reset matches
+        % Reset matches
         matches = 0;
          
-        % shuffle samples
+        % Shuffle samples
         perm = randperm(q);
         Xperm = [ones(q,1) M(perm',:)];
         Yperm = Y(perm',1);
@@ -38,7 +39,7 @@ function [w,iter,time] = perceptron(X,alpha,matchingRate,maxiter)
            y_tilde = H(w,Xperm(i,:));
            delta = Yperm(i) - y_tilde;
            
-           if delta == 0
+           if delta == 0  %i.e. correct classification as y = y_tilde
                matches = matches + 1;
            end
            
@@ -50,7 +51,7 @@ function [w,iter,time] = perceptron(X,alpha,matchingRate,maxiter)
         
     end
     
-    % time
+    % Time
     time = toc(tstart);
 
 end
