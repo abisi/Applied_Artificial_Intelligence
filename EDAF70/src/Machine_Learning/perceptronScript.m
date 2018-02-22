@@ -8,21 +8,25 @@ maxiter = 100000;
 
 [w,iter,time] = perceptron(X,alpha,matchingRate,maxiter);
 
-% plot results : y = w_0 + w_1 * x_1
+% Plot results : y = w_0 + w_1 * x_1
 
-% normalize data
+% Normalize data
 Xplot = X;
 Xplot(:,3) = Xplot(:,3)./max(Xplot(:,3));
 Xplot(:,5) = Xplot(:,5)./max(Xplot(:,5));
 
-% extract line
+% Extract line
 range = [ones(1,100) ; linspace(0,1)];
 y = -(w(1:2,:)'*range)./w(3);
 
-% plot
+% Plot
 figure;
-plot(Xplot(1:15,3),Xplot(1:15,5),'ro'); hold on
+hold on
+plot(Xplot(1:15,3),Xplot(1:15,5),'ro'); 
 plot(Xplot(16:30,3),Xplot(16:30,5),'*');
 plot(range(2,:),y(1,:))
-legend('english','french','lin. classification line');
+xlabel('Frequencies of letters per chapter');
+ylabel('Frequencies of the letter \it a');
+title('Perceptron classification');
+legend('English','French','Linear classification line');
 hold off
