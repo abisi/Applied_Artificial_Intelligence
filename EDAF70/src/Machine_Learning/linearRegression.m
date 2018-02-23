@@ -73,7 +73,7 @@ save parameters.mat salFrXScaled salFrYScaled salEnXScaled salEnYScaled w0 learn
 % Load parameters
 load parameters.mat
 maxiter = 20000;
-learningRate = 10.^linspace(-6,0,12)
+learningRate = 10.^linspace(-6,0,12);
 iterFrB = [];
 iterEnB = [];
 iterFrS = [];
