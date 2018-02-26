@@ -35,30 +35,6 @@ public class HMMLocalizer implements EstimatorInterface {
 		
 		T = new Matrix(s,s);
 		
-		for (int row = 1; row < ROWS-1; row ++) {
-			for(int col = 1; col < COLS-1; col++) {
-				for(int h = 0; h < HEAD; h ++) {
-					for (int newRow = 1; newRow < ROWS-1; newRow ++) {
-						for (int newCol = 1; newCol < COLS-1; newCol ++) {
-							for (int newH = 0; newH < HEAD; newH ++) {
-								
-								// if left wall
-								if (col == 1) {
-									// if encountering wall
-									if (h == 3) {
-										
-									}	
-								}
-								
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		
-		
 		// if corner
 		
 		// left upper corner
