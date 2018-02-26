@@ -28,7 +28,7 @@ public class DummyLocalizer implements EstimatorInterface {
 	}
 
 	public double getOrXY( int rX, int rY, int x, int y, int h) {
-		return 0.1;
+		return 1.0/(rows*cols);
 	}
 
 
