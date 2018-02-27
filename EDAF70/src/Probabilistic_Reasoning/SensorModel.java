@@ -47,12 +47,6 @@ public class SensorModel {
 		return 0.0;
 	}
 	
-	public int[] getCurrentReading(int x, int y) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
 	// ==========================================================
   	// Private methods
   	// ========================================================== 

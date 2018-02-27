@@ -33,13 +33,18 @@ public class TransitionModel {
   	// Public methods
   	// ========================================================== 
 	
-	public double getElementAt(int x, int y, int h, int nX, int nY, int nH) {
+	public double getElementAt(Position oldPos , Position newPos) {
 		// compute matrix indexes from coordinates
-		int from = stateIndex(x,y,h);
-		int to = stateIndex(nX,nY,nH);
+		int from = stateIndex(oldPos.getX(),oldPos.getY(),oldPos.getH());
+		int to = stateIndex(newPos.getX(),newPos.getY(),newPos.getH());
 		
 		// return respective element in transition matrix
 		return T.getElementAt(from, to);
+	}
+	
+	public Position nextPosition(Position oldPosition) {
+		
+		return new Position(1,1,1);
 	}
 	
 	// ==========================================================

@@ -10,7 +10,7 @@ public class HMMLocalizer implements EstimatorInterface {
 	private int ROWS, COLS, HEAD;
 		
 	// current true position
-	private int TrueX, TrueY;
+	private Position TruePosition;
 	
 	// Transition matrix
 	private TransitionModel T;
@@ -28,6 +28,7 @@ public class HMMLocalizer implements EstimatorInterface {
 		HEAD = 4;
 		
 		// Initialize the position
+		
 		
 		// generate transition matrix
 		T = new TransitionModel(rows,cols);
@@ -57,18 +58,26 @@ public class HMMLocalizer implements EstimatorInterface {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		// make move and update true position
+		TruePosition = T.nextPosition(TruePosition);
+		
+		// update sensor reading
+		
+		
+		// update probability for current position
+		
 		
 	}
 
 	@Override
 	public int[] getCurrentTruePosition() {
-		return new int[] {TrueX,TrueY};
+		return new int[] {TruePosition.getX(),TruePosition.getY()};
 	}
 
 	@Override
 	public int[] getCurrentReading() {
-		return O.getCurrentReading(TrueX, TrueY);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -84,7 +93,7 @@ public class HMMLocalizer implements EstimatorInterface {
 
 	@Override
 	public double getTProb(int x, int y, int h, int nX, int nY, int nH) {
-		return T.getElementAt(x,y,h,nX,nY,nH);
+		return T.getElementAt(new Position(x,y,h),new Position(nX,nY,nH));
 	}
 
 }
