@@ -66,11 +66,23 @@ public class SensorModel {
 	}
 	
 	private boolean isSurroundingField(int rX, int rY, int x, int y) {
-		return ( Math.abs(rX - x) == 1 && Math.abs(rY - y) == 1);
+		int verticalDistance = Math.abs(rX - x);
+		int horizontalDistance = Math.abs(rY-y);
+		if (verticalDistance == 1 && horizontalDistance == 0) return true;
+		if (verticalDistance == 1 && horizontalDistance == 1) return true;
+		if (verticalDistance == 0 && horizontalDistance == 1) return true;
+		return false;
 	}
 	
 	private boolean isSecondarySurroundingField(int rX, int rY, int x, int y) {
-		return (Math.abs(rX - x) == 2 && Math.abs(rY - y) == 2);
+		int verticalDistance = Math.abs(rX - x);
+		int horizontalDistance = Math.abs(rY - y);
+		if (verticalDistance == 2 && horizontalDistance == 2) return true;
+		if (verticalDistance == 2 && horizontalDistance == 1) return true;		
+		if (verticalDistance == 2 && horizontalDistance == 0) return true;
+		if (verticalDistance == 1 && horizontalDistance == 2) return true;
+		if (verticalDistance == 0 && horizontalDistance == 2) return true;
+		return false;
 	}
 	
 	private int numberOfSurroundingFields(int x, int y) {
