@@ -46,7 +46,7 @@ public class Matrix {
 		return new Matrix(1,1);
 	}
 	
-	public Matrix multiply (Matrix factor) {
+	public Matrix multiplyByO (Matrix factor) {
 		return new Matrix(1,1);
 	}
 	
