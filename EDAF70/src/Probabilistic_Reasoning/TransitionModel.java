@@ -45,6 +45,11 @@ public class TransitionModel {
 	// ==========================================================
   	// Private methods
   	// ========================================================== 
+	
+	private int stateIndex(int x, int y, int h) {
+		return h + x * HEAD + y * HEAD * ROWS;
+	}
+
 	private void generateT() {
 		
 		T = new Matrix(s,s);
@@ -183,9 +188,6 @@ public class TransitionModel {
 		
 	}
 	
-	private int stateIndex(int x, int y, int h) {
-		return h + x * HEAD + y * HEAD * ROWS;
-	}
 	
 
 

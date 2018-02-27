@@ -6,10 +6,17 @@ public class HMMLocalizer implements EstimatorInterface {
   	// Private Properties
   	// ========================================================== 
 	
+	// number of rows, columns and headings
 	private int ROWS, COLS, HEAD;
 		
+	// current true position
+	private int TrueX, TrueY;
+	
 	// Transition matrix
 	private TransitionModel T;
+	
+	// Observation matrices
+	private SensorModel O;
 	
     // ==========================================================
   	// Constructor
@@ -20,13 +27,14 @@ public class HMMLocalizer implements EstimatorInterface {
 		COLS = cols;
 		HEAD = 4;
 		
+		// Initialize the position
+		
 		// generate transition matrix
 		T = new TransitionModel(rows,cols);
 		
+		// generate observation matrices
+		O = new SensorModel(rows,cols);
 	}	
-	
-	
-	
 	
     // ==========================================================
   	// EstimatorInterface classes
@@ -55,14 +63,12 @@ public class HMMLocalizer implements EstimatorInterface {
 
 	@Override
 	public int[] getCurrentTruePosition() {
-		// TODO Auto-generated method stub
-		return null;
+		return new int[] {TrueX,TrueY};
 	}
 
 	@Override
 	public int[] getCurrentReading() {
-		// TODO Auto-generated method stub
-		return null;
+		return O.getCurrentReading(TrueX, TrueY);
 	}
 
 	@Override
@@ -73,8 +79,7 @@ public class HMMLocalizer implements EstimatorInterface {
 
 	@Override
 	public double getOrXY(int rX, int rY, int x, int y, int h) {
-		// TODO Auto-generated method stub
-		return 0;
+		return O.getOrXY(rX, rY, x, y, h);
 	}
 
 	@Override
