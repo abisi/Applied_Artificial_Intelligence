@@ -1,5 +1,9 @@
 package Probabilistic_Reasoning;
 
+import java.util.ArrayList;
+import java.util.Random;
+
+
 public class TransitionModel {
 
 	
@@ -43,8 +47,35 @@ public class TransitionModel {
 	}
 	
 	public Position nextPosition(Position oldPosition) {
+	
+		// get possible next Positions
+		ArrayList<Double> possibilities = new ArrayList<Double>();
+		ArrayList<Position> positions = new ArrayList<Position>();
 		
-		return new Position(1,1,1);
+		int oldindex = stateIndex(oldPosition.getX(), oldPosition.getY(), oldPosition.getH());
+
+		for (int nextindex = 0; nextindex < s; nextindex++) {
+			if(T.getElementAt(oldindex,nextindex) > 0.001) {
+				
+				possibilities.add(T.getElementAt(oldindex,nextindex));
+				positions.add(statePosition(nextindex));
+				
+			}
+		}
+		
+		System.out.println(positions.toString());
+		System.out.println(possibilities.toString());
+		
+		// choose the next position according to the possibilities
+		for(int i = 0; i < possibilities.size(); i++) {
+			// extract the possibility
+			double p = possibilities.get(i);
+			if( new Random().nextInt((int)Math.round(1.0/p)) == 0) {
+				return positions.get(i);
+			}
+		}
+		
+		return positions.get(0);
 	}
 	
 	// ==========================================================
@@ -53,6 +84,15 @@ public class TransitionModel {
 	
 	private int stateIndex(int x, int y, int h) {
 		return h + x * HEAD + y * HEAD * ROWS;
+	}
+	
+	private Position statePosition(int index) {
+		int y = index / (HEAD * ROWS);
+	    index -= (y * HEAD * ROWS);
+	    int x = index / HEAD;
+	    int h = index % HEAD;
+	    return new Position(x,y,h);
+		
 	}
 
 	private void generateT() {
@@ -121,18 +161,18 @@ public class TransitionModel {
 			T.setElementAt(stateIndex(row,0,3),stateIndex(row+1,0,2), 1.0/3);
 			
 			// right side
-			T.setElementAt(stateIndex(row,COLS-1,0),stateIndex(row-1,0,0),0.7);
-			T.setElementAt(stateIndex(row,COLS-1,0),stateIndex(row,1,3), 0.15);
-			T.setElementAt(stateIndex(row,COLS-1,0),stateIndex(row+1,0,2), 0.15);
-			T.setElementAt(stateIndex(row,COLS-1,1),stateIndex(row-1,0,0),1.0/3);
-			T.setElementAt(stateIndex(row,COLS-1,1),stateIndex(row,1,3), 1.0/3);
-			T.setElementAt(stateIndex(row,COLS-1,1),stateIndex(row+1,0,2), 1.0/3);
-			T.setElementAt(stateIndex(row,COLS-1,2),stateIndex(row-1,0,0),0.15);
-			T.setElementAt(stateIndex(row,COLS-1,2),stateIndex(row,1,3), 0.15);
-			T.setElementAt(stateIndex(row,COLS-1,2),stateIndex(row+1,0,2), 0.7);
-			T.setElementAt(stateIndex(row,COLS-1,3),stateIndex(row-1,0,0),0.15);
-			T.setElementAt(stateIndex(row,COLS-1,3),stateIndex(row,1,3), 0.7);
-			T.setElementAt(stateIndex(row,COLS-1,3),stateIndex(row+1,0,2), 0.15);
+			T.setElementAt(stateIndex(row,COLS-1,0),stateIndex(row-1,COLS-1,0),0.7);
+			T.setElementAt(stateIndex(row,COLS-1,0),stateIndex(row,COLS-2,3), 0.15);
+			T.setElementAt(stateIndex(row,COLS-1,0),stateIndex(row+1,COLS-1,2), 0.15);
+			T.setElementAt(stateIndex(row,COLS-1,1),stateIndex(row-1,COLS-1,0),1.0/3);
+			T.setElementAt(stateIndex(row,COLS-1,1),stateIndex(row,COLS-2,3), 1.0/3);
+			T.setElementAt(stateIndex(row,COLS-1,1),stateIndex(row+1,COLS-1,2), 1.0/3);
+			T.setElementAt(stateIndex(row,COLS-1,2),stateIndex(row-1,COLS-1,0),0.15);
+			T.setElementAt(stateIndex(row,COLS-1,2),stateIndex(row,COLS-2,3), 0.15);
+			T.setElementAt(stateIndex(row,COLS-1,2),stateIndex(row+1,COLS-1,2), 0.7);
+			T.setElementAt(stateIndex(row,COLS-1,3),stateIndex(row-1,COLS-1,0),0.15);
+			T.setElementAt(stateIndex(row,COLS-1,3),stateIndex(row,COLS-2,3), 0.7);
+			T.setElementAt(stateIndex(row,COLS-1,3),stateIndex(row+1,COLS-1,2), 0.15);
 		}
 		
 		// horizontal wall
@@ -157,19 +197,19 @@ public class TransitionModel {
 			T.setElementAt(stateIndex(ROWS-1,col,0), stateIndex(ROWS-2,col,0), 0.7);
 			T.setElementAt(stateIndex(ROWS-1,col,0), stateIndex(ROWS-1,col+1,1), 0.15);			
 			T.setElementAt(stateIndex(ROWS-1,col,1), stateIndex(ROWS-1,col-1,3), 0.15);
-			T.setElementAt(stateIndex(ROWS-1,col,1), stateIndex(ROWS-2,col,2), 0.15);
+			T.setElementAt(stateIndex(ROWS-1,col,1), stateIndex(ROWS-2,col,0), 0.15);
 			T.setElementAt(stateIndex(ROWS-1,col,1), stateIndex(ROWS-1,col+1,1), 0.7);			
 			T.setElementAt(stateIndex(ROWS-1,col,2), stateIndex(ROWS-1,col-1,3), 1.0/3);
-			T.setElementAt(stateIndex(ROWS-1,col,2), stateIndex(ROWS-2,col,2), 1.0/3);
+			T.setElementAt(stateIndex(ROWS-1,col,2), stateIndex(ROWS-2,col,0), 1.0/3);
 			T.setElementAt(stateIndex(ROWS-1,col,2), stateIndex(ROWS-1,col+1,1), 1.0/3);			
 			T.setElementAt(stateIndex(ROWS-1,col,3), stateIndex(ROWS-1,col-1,3), 0.7);
-			T.setElementAt(stateIndex(ROWS-1,col,3), stateIndex(ROWS-2,col,2), 0.15);
+			T.setElementAt(stateIndex(ROWS-1,col,3), stateIndex(ROWS-2,col,0), 0.15);
 			T.setElementAt(stateIndex(ROWS-1,col,3), stateIndex(ROWS-1,col+1,1), 0.15);			
 		}
 		
 		// else (not next to wall)
-		for (int row = 1; row < ROWS-2; row++) {
-			for (int col = 1; col < COLS-2; col++) {
+		for (int row = 1; row < ROWS-1; row++) {
+			for (int col = 1; col < COLS-1; col++) {
 				T.setElementAt(stateIndex(row,col,0), stateIndex(row-1,col,0), 0.7);
 				T.setElementAt(stateIndex(row,col,0), stateIndex(row,col+1,1), 0.1);
 				T.setElementAt(stateIndex(row,col,0), stateIndex(row+1,col,2), 0.1);

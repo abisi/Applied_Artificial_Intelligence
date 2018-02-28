@@ -29,6 +29,10 @@ public class Position {
   	// Public Methods
   	// ========================================================== 
 
+	public String toString() {
+		return "[ " + X + " , " + Y + " , " + H + " ]";
+	}
+	
 	public int getX() {
 		return X;
 	}

@@ -1,5 +1,7 @@
 package Probabilistic_Reasoning;
 
+import java.util.Random;
+
 public class HMMLocalizer implements EstimatorInterface {
 
     // ==========================================================
@@ -28,7 +30,8 @@ public class HMMLocalizer implements EstimatorInterface {
 		HEAD = 4;
 		
 		// Initialize the position
-		
+		TruePosition = new Position(ROWS/2,COLS/2,new Random().nextInt(HEAD));
+		System.out.println("The initial position is: " + TruePosition.toString());
 		
 		// generate transition matrix
 		T = new TransitionModel(rows,cols);
@@ -60,6 +63,7 @@ public class HMMLocalizer implements EstimatorInterface {
 	public void update() {
 		// make move and update true position
 		TruePosition = T.nextPosition(TruePosition);
+		System.out.println(TruePosition.toString());
 		
 		// update sensor reading
 		
