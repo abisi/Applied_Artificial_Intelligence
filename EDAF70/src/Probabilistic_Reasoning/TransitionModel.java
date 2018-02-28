@@ -49,33 +49,25 @@ public class TransitionModel {
 	public Position nextPosition(Position oldPosition) {
 	
 		// get possible next Positions
-		ArrayList<Double> possibilities = new ArrayList<Double>();
 		ArrayList<Position> positions = new ArrayList<Position>();
 		
-		int oldindex = stateIndex(oldPosition.getX(), oldPosition.getY(), oldPosition.getH());
+		int oldindex = stateIndex(oldPosition);
 
 		for (int nextindex = 0; nextindex < s; nextindex++) {
-			if(T.getElementAt(oldindex,nextindex) > 0.001) {
-				
-				possibilities.add(T.getElementAt(oldindex,nextindex));
-				positions.add(statePosition(nextindex));
-				
+			
+			double chance = T.getElementAt(oldindex,nextindex);
+			
+			if(chance > 0.001) {
+				int percentage = Math.round((int)(chance * 100));
+				for (int i = 0; i < percentage; i++) {
+					positions.add(statePosition(nextindex));
+				}				
 			}
 		}
-		
-		System.out.println(positions.toString());
-		System.out.println(possibilities.toString());
 		
 		// choose the next position according to the possibilities
-		for(int i = 0; i < possibilities.size(); i++) {
-			// extract the possibility
-			double p = possibilities.get(i);
-			if( new Random().nextInt((int)Math.round(1.0/p)) == 0) {
-				return positions.get(i);
-			}
-		}
-		
-		return positions.get(0);
+		int size = positions.size();
+		return positions.get( new Random().nextInt(size));
 	}
 	
 	// ==========================================================
@@ -85,7 +77,12 @@ public class TransitionModel {
 	private int stateIndex(int x, int y, int h) {
 		return h + x * HEAD + y * HEAD * ROWS;
 	}
-	
+
+	private int stateIndex(Position pos) {
+		return pos.getH() + pos.getX() * HEAD + pos.getY() * HEAD * ROWS;
+	}
+
+
 	private Position statePosition(int index) {
 		int y = index / (HEAD * ROWS);
 	    index -= (y * HEAD * ROWS);

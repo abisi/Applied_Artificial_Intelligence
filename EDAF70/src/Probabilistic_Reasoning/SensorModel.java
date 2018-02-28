@@ -47,6 +47,12 @@ public class SensorModel {
 		return 0.0;
 	}
 	
+	public Position currentReading(Position oldPos) {
+		
+		
+		return new Position(1,1);
+	}
+	
 	// ==========================================================
   	// Private methods
   	// ========================================================== 
