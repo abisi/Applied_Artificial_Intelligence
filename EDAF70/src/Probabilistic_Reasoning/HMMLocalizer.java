@@ -30,7 +30,7 @@ public class HMMLocalizer implements EstimatorInterface {
 		HEAD = 4;
 		
 		// Initialize the position
-		TruePosition = new Position(ROWS/2,COLS/2,new Random().nextInt(HEAD));
+		TruePosition = new Position(new Random().nextInt(ROWS),new Random().nextInt(COLS),new Random().nextInt(HEAD));
 		System.out.println("The initial position is: " + TruePosition.toString());
 		
 		// generate transition matrix
@@ -80,8 +80,8 @@ public class HMMLocalizer implements EstimatorInterface {
 
 	@Override
 	public int[] getCurrentReading() {
-		// TODO Auto-generated method stub
-		return null;
+		Position currReading = O.currentReading(TruePosition);
+		return new int[] {currReading.getX(), currReading.getY() };
 	}
 
 	@Override

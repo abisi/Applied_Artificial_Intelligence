@@ -18,6 +18,20 @@ public class Matrix {
 		MATRIX = new double[rows][cols];
 	}
 	
+	public void norm() {
+		double sum = 0;
+		
+		// sum up all the elements
+		for (int row = 0; row < ROWS; row ++)
+			for (int col = 0; col < COLS; col ++) 
+				sum += MATRIX[row][col];
+		
+		// normalize by the sum
+		for (int row = 0; row < ROWS; row ++)
+			for (int col = 0; col < COLS; col ++)
+				MATRIX[row][col] /= sum;
+	}
+	
     // ==========================================================
   	// Public Methods
   	// ========================================================== 

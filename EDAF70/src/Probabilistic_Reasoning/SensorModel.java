@@ -1,12 +1,18 @@
 package Probabilistic_Reasoning;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class SensorModel {
 
 	// ==========================================================
   	// Private Properties
   	// ========================================================== 
 	
-	private int ROWS, COLS;
+	private int ROWS, COLS, HEAD, s;
+	
+	// O's
+	private Matrix O;
 	
 	// probabilities
 	private static double TrueLocationProbability = 0.10;
@@ -20,6 +26,11 @@ public class SensorModel {
 	public SensorModel( int rows, int cols) {
 		ROWS = rows;
 		COLS = cols;
+		HEAD = 4;
+		s = ROWS * COLS * 4;
+		
+		// generate O's
+		generateOs();
 	}	
 	
 	// ==========================================================
@@ -27,6 +38,50 @@ public class SensorModel {
   	// ========================================================== 
 	
 	public double getOrXY(int rX, int rY, int x, int y, int h) {
+		return O.getElementAt(readingIndex(rX,rY), stateIndex(x,y,h));
+	}
+	
+	public Position currentReading(Position oldPos) {
+		
+		// get possible next Positions
+		ArrayList<Position> positions = new ArrayList<Position>();
+		
+		int oldindex = stateIndex(oldPos);
+
+		for (int field = 0; field < ROWS * COLS + 1; field++) {
+			
+			double chance = O.getElementAt(field,oldindex);
+			
+			if(chance > 0.001) {
+				int percentage = Math.round((int)(chance * 100));
+				for (int i = 0; i < percentage; i++) {
+					positions.add(readingPosition(field));
+				}				
+			}
+		}
+		
+		// choose the next position randomly
+		return positions.get( new Random().nextInt(positions.size()));		
+	}
+	
+	// ==========================================================
+  	// Private methods
+  	// ========================================================== 
+	
+	private void generateOs() {
+		O = new Matrix(ROWS*COLS + 1,s);
+		
+		for (int i = 0; i < ROWS * COLS + 1; i++) {
+			for (int j = 0; j < s; j++) {
+				Position state = statePosition(j);
+				Position reading = readingPosition(i);
+				O.setElementAt(i,j,generateOrXY(reading.getX(), reading.getY(), state.getX(), state.getY(), state.getH()));
+			}
+		}
+		
+	}
+	
+	private double generateOrXY(int rX, int rY, int x, int y, int h) {
 		// Probability that sensor reading r = (rX,rY) has been caused by respective state (x,y,h)
 		
 		// reading is equal
@@ -41,21 +96,41 @@ public class SensorModel {
 		// reading is nothing
 		if (isReadingNothing(rX,rY))
 			return 1.0 - 
+					TrueLocationProbability - 
 					numberOfSurroundingFields(x,y) * SurroundingFieldsProbability - 
 					numberOfSecondarySurroundingFields(x,y) * SecondarySurroundingFieldsProbability;
 		
 		return 0.0;
 	}
 	
-	public Position currentReading(Position oldPos) {
-		
-		
-		return new Position(1,1);
+	private int stateIndex(int x, int y, int h) {
+		return h + x * HEAD + y * HEAD * ROWS;
 	}
 	
-	// ==========================================================
-  	// Private methods
-  	// ========================================================== 
+	private int stateIndex(Position pos) {
+		return pos.getH() + pos.getX() * HEAD + pos.getY() * HEAD * ROWS;
+	}
+	
+	private Position statePosition(int index) {
+		int y = index / (HEAD * ROWS);
+	    index = index % (HEAD * ROWS);
+	    int x = index / HEAD;
+	    int h = index % HEAD;
+	    return new Position(x,y,h);
+		
+	}
+	
+	private int readingIndex(int rX, int rY) {
+		if (rX == -1 && rY == -1) return ROWS * COLS;
+		return rX + rY*ROWS;
+	}
+	
+	private Position readingPosition(int index) {
+		if (index == ROWS * COLS) return new Position(-1,-1);
+		int rY = index / ROWS;
+		int rX = index % ROWS;
+		return new Position(rX,rY);
+	}
 	
 	private boolean isReadingNothing(int x, int y) {
 		return (x == -1 && y == -1);
@@ -123,8 +198,8 @@ public class SensorModel {
 	private boolean isDiagonalToCorner(int x, int y) {
 		if (x == 1 && y == 1) return true;
 		if (x == 1 && y == COLS - 2) return true;
-		if (x == ROWS-2 &&  y == 1) return true;
-		if (x == ROWS-2 && y == COLS - 2) return true;
+		if (x == ROWS -2 &&  y == 1) return true;
+		if (x == ROWS -2 && y == COLS - 2) return true;
 		return false;
 	}
 	

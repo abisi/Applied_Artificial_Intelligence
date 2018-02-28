@@ -66,8 +66,7 @@ public class TransitionModel {
 		}
 		
 		// choose the next position according to the possibilities
-		int size = positions.size();
-		return positions.get( new Random().nextInt(size));
+		return positions.get( new Random().nextInt(positions.size()));
 	}
 	
 	// ==========================================================
