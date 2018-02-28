@@ -46,6 +46,10 @@ public class TransitionModel {
 		return T.getElementAt(from, to);
 	}
 	
+	public Matrix getT() {
+		return T;
+	}
+	
 	public Position nextPosition(Position oldPosition) {
 	
 		// get possible next Positions

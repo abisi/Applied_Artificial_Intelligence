@@ -20,6 +20,9 @@ public class HMMLocalizer implements EstimatorInterface {
 	// Observation matrices
 	private SensorModel O;
 	
+	// prediction vector
+	private ForwardPrediction f;
+	
     // ==========================================================
   	// Constructor
   	// ========================================================== 
@@ -38,6 +41,9 @@ public class HMMLocalizer implements EstimatorInterface {
 		
 		// generate observation matrices
 		O = new SensorModel(rows,cols);
+		
+		// initialize prediction vector
+		f = new ForwardPrediction(rows, cols);
 	}	
 	
     // ==========================================================
@@ -64,13 +70,7 @@ public class HMMLocalizer implements EstimatorInterface {
 		// make move and update true position
 		TruePosition = T.nextPosition(TruePosition);
 		System.out.println(TruePosition.toString());
-		
-		// update sensor reading
-		
-		
-		// update probability for current position
-		
-		
+		f.forwardPrediction(O.getO(TruePosition), T.getT());
 	}
 
 	@Override
@@ -86,8 +86,7 @@ public class HMMLocalizer implements EstimatorInterface {
 
 	@Override
 	public double getCurrentProb(int x, int y) {
-		// TODO Auto-generated method stub
-		return 0;
+		return f.probForPos(new Position(x,y));
 	}
 
 	@Override

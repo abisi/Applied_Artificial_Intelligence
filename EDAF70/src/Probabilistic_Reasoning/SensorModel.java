@@ -41,16 +41,16 @@ public class SensorModel {
 		return O.getElementAt(readingIndex(rX,rY), stateIndex(x,y,h));
 	}
 	
-	public Position currentReading(Position oldPos) {
+	public Position currentReading(Position Pos) {
 		
 		// get possible next Positions
 		ArrayList<Position> positions = new ArrayList<Position>();
 		
-		int oldindex = stateIndex(oldPos);
+		int stateIndex = stateIndex(Pos);
 
-		for (int field = 0; field < ROWS * COLS + 1; field++) {
+		for (int field = 0; field < ROWS * COLS + 1; field ++) {
 			
-			double chance = O.getElementAt(field,oldindex);
+			double chance = O.getElementAt(field,stateIndex);
 			
 			if(chance > 0.001) {
 				int percentage = Math.round((int)(chance * 100));
@@ -64,6 +64,18 @@ public class SensorModel {
 		return positions.get( new Random().nextInt(positions.size()));		
 	}
 	
+	public Matrix getO(Position pos) {
+		
+		int stateIndex = stateIndex(pos.getX(), pos.getY(), pos.getH());
+		ArrayList<Double> diag = new ArrayList<Double>();
+		
+		for (int i = 0; i < O.getRows() - 1; i++)
+			for (int j = 0; j < HEAD; j ++)
+				diag.add(O.getElementAt(i,stateIndex));
+		
+		return new Matrix(diag);
+	}
+	
 	// ==========================================================
   	// Private methods
   	// ========================================================== 
@@ -71,8 +83,8 @@ public class SensorModel {
 	private void generateOs() {
 		O = new Matrix(ROWS*COLS + 1,s);
 		
-		for (int i = 0; i < ROWS * COLS + 1; i++) {
-			for (int j = 0; j < s; j++) {
+		for (int i = 0; i < O.getRows(); i++) {
+			for (int j = 0; j < O.getCols(); j++) {
 				Position state = statePosition(j);
 				Position reading = readingPosition(i);
 				O.setElementAt(i,j,generateOrXY(reading.getX(), reading.getY(), state.getX(), state.getY(), state.getH()));
