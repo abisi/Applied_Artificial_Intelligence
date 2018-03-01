@@ -8,11 +8,12 @@ public class Main {
 	
 	public static void main( String[] args) {
 		
+		
 		/*
 		 * generate you own localiser / estimator wrapper here to plug it into the 
 		 * graphics class.
 		 */
-		EstimatorInterface l = new HMMLocalizer( 4, 4);
+		EstimatorInterface l = new HMMLocalizer( 5, 5);
 
 		RobotLocalizationViewer viewer = new RobotLocalizationViewer(l);
 
@@ -22,5 +23,9 @@ public class Main {
 		 */
 		new LocalizationDriver( 500, viewer).start();
 		
+		// Test HMMLocalizer
+		TestProgram test = new TestProgram(new HMMLocalizer(5,5), 200);
+			
 	}
+	
 }	

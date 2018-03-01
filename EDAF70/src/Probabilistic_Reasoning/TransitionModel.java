@@ -52,20 +52,20 @@ public class TransitionModel {
 	
 	public Position nextPosition(Position oldPosition) {
 	
-		// get possible next Positions
+		// initialize ArrayList for possible next Positions
 		ArrayList<Position> positions = new ArrayList<Position>();
 		
 		int oldindex = stateIndex(oldPosition);
-
+		
+		// add positions according to probability to ArrayList
 		for (int nextindex = 0; nextindex < s; nextindex++) {
 			
 			double chance = T.getElementAt(oldindex,nextindex);
 			
 			if(chance > 0.001) {
 				int percentage = Math.round((int)(chance * 100));
-				for (int i = 0; i < percentage; i++) {
-					positions.add(statePosition(nextindex));
-				}				
+				for (int i = 0; i < percentage; i++) 
+					positions.add(statePosition(nextindex));			
 			}
 		}
 		

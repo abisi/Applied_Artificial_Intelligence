@@ -51,7 +51,13 @@ public class HMMLocalizer implements EstimatorInterface {
 		// Initialize Reading
 		Reading = O.currentReading(TruePosition);
 		
-	}	
+	}
+	
+	// ==========================================================
+  	// Public methods
+  	// ========================================================== 
+	
+	
 	
     // ==========================================================
   	// EstimatorInterface classes

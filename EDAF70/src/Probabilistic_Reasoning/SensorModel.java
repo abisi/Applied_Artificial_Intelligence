@@ -48,15 +48,14 @@ public class SensorModel {
 		
 		int stateIndex = stateIndex(Pos);
 
-		for (int field = 0; field < ROWS * COLS + 1; field ++) {
+		for (int reading = 0; reading < ROWS * COLS + 1; reading ++) {
 			
-			double chance = O.getElementAt(field,stateIndex);
+			double chance = O.getElementAt(reading,stateIndex);
 			
 			if(chance > 0.001) {
 				int percentage = Math.round((int)(chance * 100));
-				for (int i = 0; i < percentage; i++) {
-					positions.add(readingPosition(field));
-				}				
+				for (int i = 0; i < percentage; i++) 
+					positions.add(readingPosition(reading));			
 			}
 		}
 		

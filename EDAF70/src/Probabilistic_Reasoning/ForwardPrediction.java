@@ -28,7 +28,11 @@ public class ForwardPrediction {
   	// ========================================================== 
 	
 	public double probForPos(Position pos) {
-		return f.getElementAt(stateIndex(pos), 0);
+		double sum = 0.0;
+		for (int heading = 0; heading < HEAD; heading ++) {
+			sum += f.getElementAt(stateIndex(new Position(pos.getX(), pos.getY(), heading)), 0);
+		}
+		return sum;
 	}
 	
 	public void forwardPrediction(Matrix O, Matrix T) {
