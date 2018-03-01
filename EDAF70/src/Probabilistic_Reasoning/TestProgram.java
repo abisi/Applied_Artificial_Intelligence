@@ -57,7 +57,7 @@ public class TestProgram {
 		// safe in local file
 		try {
             String str = testData.toMATLABString();
-            File newTextFile = new File("HMMLocalizer.txt");
+            File newTextFile = new File("src/Probabilistic_Reasoning/HMMLocalizer.txt");
 
             FileWriter fw = new FileWriter(newTextFile);
             fw.write(str);
