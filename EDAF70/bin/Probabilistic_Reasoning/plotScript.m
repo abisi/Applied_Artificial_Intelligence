@@ -1,5 +1,5 @@
 
-text = importTextFile("HMMLocalizer.txt");
+text = importTextFile('HMMLocalizer.txt');
 [rows, cols] = size(text);
 MEANS = mean(text,1);
 p = polyfit(1:cols,MEANS,15);
