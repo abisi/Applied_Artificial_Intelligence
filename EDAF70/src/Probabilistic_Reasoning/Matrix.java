@@ -107,6 +107,19 @@ public class Matrix {
 		return s;
 	}
 	
+	public String toMATLABString() {
+		
+		String s = "";
+		
+		for (int row = 0; row < ROWS; row ++) {
+			for (int col = 0; col < COLS; col ++)
+				s += " " + String.format( "%.3f", (MATRIX[row][col])) + ",";
+			s += "\n";
+		}
+				
+		return s;
+	}
+	
 	public Matrix transpose() {
 		Matrix transpose = new Matrix(COLS,ROWS);
 		

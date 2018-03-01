@@ -1,12 +1,14 @@
 package Probabilistic_Reasoning;
 
+import java.io.*;
+
 public class TestProgram {
 	
 	// ==========================================================
   	// Private Properties
   	// ========================================================== 
 	
-	private int Runs;
+	private int Runs, Iterations;
 	private HMMLocalizer Localizer;
 	
 	private Matrix testData;
@@ -15,9 +17,10 @@ public class TestProgram {
   	// Constructor
   	// ========================================================== 
 	
-	public TestProgram(HMMLocalizer localizer, int runs) {
+	public TestProgram(HMMLocalizer localizer, int runs, int iterations) {
 		Localizer = localizer;
 		Runs = runs;
+		Iterations = iterations;
 	}
 	
 	// ==========================================================
@@ -26,23 +29,43 @@ public class TestProgram {
 	
 	public void testEstimator() {
 		
-		testData = new Matrix(5,Runs);
+		testData = new Matrix(Iterations,Runs);
 		
-		for (int i = 0; i < Runs; i++) {
+		for (int iter = 0; iter < Iterations; iter ++) {
 			
-			// save true position
-			int[] truePosition = Localizer.getCurrentTruePosition();
-			testData.setElementAt(0, i, truePosition[0]);
-			testData.setElementAt(1, i, truePosition[1]);
+			Localizer.reset();
 			
-			// save current best estimate
-			
-			
-			// save Manhattan distance
-			int manhattan = ManhattanDistance(truePosition, truePosition);
-			testData.setElementAt(4, i, manhattan);
+			for (int i = 0; i < Runs; i++) {
+				
+				// save true position
+				int[] truePosition = Localizer.getCurrentTruePosition();
+				
+				// save current best estimate
+				int[] bestEstimate = Localizer.getCurrentBestEstimate();
+				
+				// save Manhattan distance
+				int manhattan = ManhattanDistance(truePosition, bestEstimate);
+				testData.setElementAt(iter, i, manhattan);
+				
+				// make a step
+				Localizer.update();
+		
+			}
 			
 		}
+		
+		// safe in local file
+		try {
+            String str = testData.toMATLABString();
+            File newTextFile = new File("HMMLocalizer.txt");
+
+            FileWriter fw = new FileWriter(newTextFile);
+            fw.write(str);
+            fw.close();
+
+        } catch (IOException iox) {
+            iox.printStackTrace();
+        }
 		
 	}
 	

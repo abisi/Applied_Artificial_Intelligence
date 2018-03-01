@@ -57,7 +57,21 @@ public class HMMLocalizer implements EstimatorInterface {
   	// Public methods
   	// ========================================================== 
 	
+	public int[] getCurrentBestEstimate() {
+		Position bestEstimate = f.bestEstimate();
+		return new int[] {bestEstimate.getX(),bestEstimate.getY()};
+	}
 	
+	public void reset() {
+		// reset prediction
+		f.initializef();
+		
+		// Initialize the true position (randomly)
+		TruePosition = new Position(new Random().nextInt(ROWS),new Random().nextInt(COLS),new Random().nextInt(HEAD));
+		
+		// Initialize Reading
+		Reading = O.currentReading(TruePosition);
+	}
 	
     // ==========================================================
   	// EstimatorInterface classes
@@ -82,11 +96,11 @@ public class HMMLocalizer implements EstimatorInterface {
 	public void update() {
 		// make move and update true position
 		TruePosition = T.nextPosition(TruePosition);
-		System.out.println("True Position: " + TruePosition.toString());
+		// System.out.println("True Position: " + TruePosition.toString());
 		
 		// update reading
 		Reading = O.currentReading(TruePosition);
-		System.out.println("Current Reading: " + Reading.toString());
+		// System.out.println("Current Reading: " + Reading.toString());
 		
 		// update probability distribution for the position estimate
 		f.forwardPrediction(O.getO(Reading), T.getT());
