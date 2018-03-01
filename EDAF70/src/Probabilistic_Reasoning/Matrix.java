@@ -1,8 +1,5 @@
 package Probabilistic_Reasoning;
 
-import java.util.ArrayList;
-
-
 public class Matrix {
 	
     // ==========================================================
@@ -30,14 +27,14 @@ public class Matrix {
 		MATRIX = matrix;
 	}
 	
-	public Matrix(ArrayList<Double> diag) {
-		ROWS = diag.size();
-		COLS = diag.size();
+	public Matrix(double[] diag) {
+		ROWS = diag.length;
+		COLS = diag.length;
 		MATRIX = new double[ROWS][COLS];
 		
 		for (int row = 0; row < ROWS; row ++)
 			for (int col = 0; col < COLS; col ++)
-				MATRIX[row][col] = (row == col) ? diag.get(row) : 0.0;
+				MATRIX[row][col] = (row == col) ? diag[row] : 0.0;
 		
 	}
 	
@@ -101,13 +98,12 @@ public class Matrix {
 		
 		for (int row = 0; row < ROWS; row ++) {
 			s += "|";
-			for (int col = 0; col < COLS; col ++) {
-				s += " " + MATRIX[row][col] + " ";
-			}
+			for (int col = 0; col < COLS; col ++)
+				s += " " + String.format( "%.3f", (MATRIX[row][col])) + "\t";
 			
 			s += "| \n";
 		}
-		
+				
 		return s;
 	}
 	
@@ -132,5 +128,18 @@ public class Matrix {
 		return product;
 	}
 		
+	public double sumOfRow(int rowIndex) {
+		double sum = 0.0;
+		for (int i = 0; i < COLS; i ++) 
+			sum += MATRIX[rowIndex][i];
+		return sum;
+	}
+
+	public double sumOfColumn(int colIndex) {
+		double sum = 0.0;
+		for (int i = 0; i < ROWS; i ++) 
+			sum += MATRIX[i][colIndex];
+		return sum;
+	}
 
 }

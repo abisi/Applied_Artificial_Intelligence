@@ -64,14 +64,13 @@ public class SensorModel {
 		return positions.get( new Random().nextInt(positions.size()));		
 	}
 	
-	public Matrix getO(Position pos) {
+	public Matrix getO(Position reading) {
 		
-		int stateIndex = stateIndex(pos.getX(), pos.getY(), pos.getH());
-		ArrayList<Double> diag = new ArrayList<Double>();
+		int readingIndex = readingIndex(reading.getX(), reading.getY());
+		double[] diag = new double[s];
 		
-		for (int i = 0; i < O.getRows() - 1; i++)
-			for (int j = 0; j < HEAD; j ++)
-				diag.add(O.getElementAt(i,stateIndex));
+		for (int i = 0; i < s; i++)
+				diag[i] = O.getElementAt(readingIndex,i);
 		
 		return new Matrix(diag);
 	}
@@ -81,16 +80,16 @@ public class SensorModel {
   	// ========================================================== 
 	
 	private void generateOs() {
-		O = new Matrix(ROWS*COLS + 1,s);
+		O = new Matrix(ROWS*COLS+1,s);
 		
-		for (int i = 0; i < O.getRows(); i++) {
-			for (int j = 0; j < O.getCols(); j++) {
-				Position state = statePosition(j);
-				Position reading = readingPosition(i);
-				O.setElementAt(i,j,generateOrXY(reading.getX(), reading.getY(), state.getX(), state.getY(), state.getH()));
+		for (int reading = 0; reading < O.getRows(); reading++) {
+			for (int state = 0; state < O.getCols(); state++) {
+				Position statePos = statePosition(state);
+				Position readingPos = readingPosition(reading);
+				O.setElementAt(reading,state,
+						generateOrXY(readingPos.getX(), readingPos.getY(), statePos.getX(), statePos.getY(), statePos.getH()));
 			}
-		}
-		
+		}		
 	}
 	
 	private double generateOrXY(int rX, int rY, int x, int y, int h) {
@@ -107,11 +106,10 @@ public class SensorModel {
 		
 		// reading is nothing
 		if (isReadingNothing(rX,rY))
-			return 1.0 - 
+			return 1.0 -
 					TrueLocationProbability - 
 					numberOfSurroundingFields(x,y) * SurroundingFieldsProbability - 
 					numberOfSecondarySurroundingFields(x,y) * SecondarySurroundingFieldsProbability;
-		
 		return 0.0;
 	}
 	
@@ -139,21 +137,24 @@ public class SensorModel {
 	
 	private Position readingPosition(int index) {
 		if (index == ROWS * COLS) return new Position(-1,-1);
+		
 		int rY = index / ROWS;
 		int rX = index % ROWS;
-		return new Position(rX,rY);
+		return new Position(rX,rY);			
+		
 	}
 	
-	private boolean isReadingNothing(int x, int y) {
-		return (x == -1 && y == -1);
+	private boolean isReadingNothing(int rX, int rY) {
+		return (rX == -1 && rY == -1);
 	}
-	
+		
 	private boolean isReadingCorrect(int rX, int rY, int x, int y ) {
 		return (rX == x && rY == y);
 	}
 	
 	private boolean isSurroundingField(int rX, int rY, int x, int y) {
-		int verticalDistance = Math.abs(rX - x);
+		if (isReadingNothing(rX,rY)) return false;
+		int verticalDistance = Math.abs(rX-x);
 		int horizontalDistance = Math.abs(rY-y);
 		if (verticalDistance == 1 && horizontalDistance == 0) return true;
 		if (verticalDistance == 1 && horizontalDistance == 1) return true;
@@ -162,6 +163,7 @@ public class SensorModel {
 	}
 	
 	private boolean isSecondarySurroundingField(int rX, int rY, int x, int y) {
+		if (isReadingNothing(rX,rY)) return false;
 		int verticalDistance = Math.abs(rX - x);
 		int horizontalDistance = Math.abs(rY - y);
 		if (verticalDistance == 2 && horizontalDistance == 2) return true;
@@ -196,12 +198,12 @@ public class SensorModel {
 	}
 	
 	private boolean isNextToWall(int x, int y) {
-		if (x == 0 || x == ROWS - 1) return true;
-		if (y == 0 || y == COLS - 1) return true;
+		if (x == 0 	|| x == ROWS - 1	) return true;
+		if (y == 0 	|| y == COLS - 1	) return true;
 		return false;
 	}
 	
-	private boolean isNextToCorner(int x,int y) {
+	private boolean isNextToCorner(int x, int y) {
 		if (isNextToWall(x,y) && (x == 1 || x == ROWS - 2)) return true;
 		if (isNextToWall(x,y) && (y == 1 || y == COLS - 2)) return true;
 		return false;

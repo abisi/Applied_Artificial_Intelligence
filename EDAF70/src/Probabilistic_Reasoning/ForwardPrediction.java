@@ -42,9 +42,7 @@ public class ForwardPrediction {
 	
 	private void initializef() {
 		f = new Matrix(s,1);
-		f.setScalar(1.0/s);
-		System.out.println(f.toString());
-		
+		f.setScalar(1.0/s);		
 	}
 	
 	private int stateIndex(Position pos) {

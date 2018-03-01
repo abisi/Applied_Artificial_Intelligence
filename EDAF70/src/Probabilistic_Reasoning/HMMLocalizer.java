@@ -14,6 +14,9 @@ public class HMMLocalizer implements EstimatorInterface {
 	// current true position
 	private Position TruePosition;
 	
+	// current reading
+	private Position Reading;
+	
 	// Transition matrix
 	private TransitionModel T;
 	
@@ -32,10 +35,6 @@ public class HMMLocalizer implements EstimatorInterface {
 		COLS = cols;
 		HEAD = 4;
 		
-		// Initialize the position
-		TruePosition = new Position(new Random().nextInt(ROWS),new Random().nextInt(COLS),new Random().nextInt(HEAD));
-		System.out.println("The initial position is: " + TruePosition.toString());
-		
 		// generate transition matrix
 		T = new TransitionModel(rows,cols);
 		
@@ -44,6 +43,14 @@ public class HMMLocalizer implements EstimatorInterface {
 		
 		// initialize prediction vector
 		f = new ForwardPrediction(rows, cols);
+		
+		// Initialize the true position (randomly)
+		TruePosition = new Position(new Random().nextInt(ROWS),new Random().nextInt(COLS),new Random().nextInt(HEAD));
+		System.out.println("The initial position is: " + TruePosition.toString());
+		
+		// Initialize Reading
+		Reading = O.currentReading(TruePosition);
+		
 	}	
 	
     // ==========================================================
@@ -69,8 +76,14 @@ public class HMMLocalizer implements EstimatorInterface {
 	public void update() {
 		// make move and update true position
 		TruePosition = T.nextPosition(TruePosition);
-		System.out.println(TruePosition.toString());
-		f.forwardPrediction(O.getO(TruePosition), T.getT());
+		System.out.println("True Position: " + TruePosition.toString());
+		
+		// update reading
+		Reading = O.currentReading(TruePosition);
+		System.out.println("Current Reading: " + Reading.toString());
+		
+		// update probability distribution for the position estimate
+		f.forwardPrediction(O.getO(Reading), T.getT());
 	}
 
 	@Override
@@ -80,8 +93,7 @@ public class HMMLocalizer implements EstimatorInterface {
 
 	@Override
 	public int[] getCurrentReading() {
-		Position currReading = O.currentReading(TruePosition);
-		return new int[] {currReading.getX(), currReading.getY() };
+		return new int[] {Reading.getX(), Reading.getY() };
 	}
 
 	@Override
